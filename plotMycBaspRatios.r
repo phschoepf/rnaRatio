@@ -112,6 +112,8 @@ patplot <-
     color = "#f39200"
   )
 
-#display plot
+#export to png
 aligned <- align_plots(cellplot, patplot, align = "v", axis = "lr")
+png("images/myc_basp1_ratios_combined.png", width = 1800, height = 800)
 grid.arrange(aligned[[1]], aligned[[2]], layout_matrix = rbind(1, 1, 1, 1, 2))
+dev.off()
