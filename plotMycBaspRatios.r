@@ -60,6 +60,11 @@ for (origin in unique(cellLines$Origin)) {
     )
 }
 
+#get subset of selected cell lines
+selectedCellLines <- cellLines %>% 
+  filter(grepl("K562|MOLT4|SW480|MCF7|LN18|HEK293T|HL60|HeLa", SAMPLE_ID, ignore.case = T))%>% 
+  mutate(Name = gsub("_.*", "", SAMPLE_ID, ignore.case = T))
+
 # plotting cells
 cellplot <-
   ggplot(cellLines, aes(
@@ -77,8 +82,9 @@ cellplot <-
     shape = 16,
     position = position_jitter(w = 0, h = 0.15),
     size = 0.9,
-    color = "#f39200"
-  )
+    color = "#f39200") +
+  geom_point(data = selectedCellLines, color = "red", size = 4) +
+  geom_text(data = selectedCellLines, aes(label = Name), nudge_y = 0.65)
 
 # plotting patients
 patplot <-
