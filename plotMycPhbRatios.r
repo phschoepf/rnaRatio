@@ -71,6 +71,7 @@ cellplot <-
   )) +
   xlim(-4, 4) +
   labs(title = "Cell lines", y = "", x = "") +
+  theme(axis.text.y = element_text(size = 28)) +
   stat_boxplot(geom = "errorbar", width = 0.6, lwd = 1) +
   geom_boxplot(outlier.shape = NA,
                lwd = 1,
@@ -109,11 +110,12 @@ patplot <-
 
 #export to png
 aligned <- align_plots(cellplot, patplot, align = "v", axis = "lr")
-png("images/myc_phb_ratios_combined.png", width = 2300, height = 1000)
-grid.arrange(aligned[[1]], 
-             aligned[[2]],
-             textGrob(expression(paste({}^{
-               "[1]"
-             }, "Cell lines: RNAseq RKPM, patient data: RNAseq RSEM")), x = 1, hjust = 1),
-             layout_matrix = rbind(1, 1, 1, 1, 2, 3))
+png("images/myc_phb_ratios_cells_annotation.png", width = 2300, height = 1000)
+plot(cellplot)
+# grid.arrange(aligned[[1]], 
+#              aligned[[2]],
+#              textGrob(expression(paste({}^{
+#                "[1]"
+#              }, "Cell lines: RNAseq RKPM, patient data: RNAseq RSEM")), x = 1, hjust = 1),
+#              layout_matrix = rbind(1, 1, 1, 1, 2, 3))
 dev.off()
