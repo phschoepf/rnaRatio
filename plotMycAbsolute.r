@@ -11,12 +11,12 @@ source("parseInputData.r")
 # plotting cells
 cellplot <-
   ggplot(cellLines, aes(
-    y = reorder(Origin,-MYC, FUN = median),
+    y = reorder(Origin, MYC, FUN = median),
     x = MYC,
     na.rm = TRUE
   )) +
   theme_classic(base_size = 20) +
-  coord_cartesian(xlim = (c(0, 400)))
+  coord_cartesian(xlim = (c(0, 400)), expand = F) +
   labs(title = "Cell lines",
        y = "" ,
        x = "MYC RNA expression, RNAseq RPKM") +
@@ -31,18 +31,23 @@ cellplot <-
     color = "#f39200"
   ) +
   geom_point(data = selectedCellLines, color = "red", size = 4) +
-  geom_text(data = selectedCellLines, aes(label = Name), nudge_x = 4, nudge_y = 0.25)
+  geom_text(
+    data = selectedCellLines,
+    aes(label = Name),
+    nudge_x = 4,
+    nudge_y = 0.25
+  )
 
 
 # plotting patients
 patplot <-
   ggplot(allPatientData, aes(
-    y = reorder(Origin,-MYC, FUN = "median"),
+    y = reorder(Origin, MYC, FUN = "median"),
     x = MYC,
     na.rm = TRUE
   )) +
   theme_classic(base_size = 20) +
-  coord_cartesian(xlim = (c(0, 15000))) +
+  coord_cartesian(xlim = (c(0, 15000)), expand = F) +
   labs(title = "Patient samples",
        y = "" ,
        x = "MYC RNA expression, RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)") +
@@ -76,11 +81,6 @@ png("images/myc_absolute_combined.png",
 grid.arrange(
   aligned[[1]],
   aligned[[2]],
-  textGrob(
-    "Cell lines: RNAseq RPKM, patient data: RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)",
-    x = 1,
-    hjust = 1
-  ),
-  layout_matrix = rbind(1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3)
+  layout_matrix = rbind(1, 2)
 )
 dev.off()

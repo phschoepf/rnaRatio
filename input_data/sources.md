@@ -1,8 +1,10 @@
-#Data sources: MYC-BASP1-PHB ratios
-##Cell lines:
+
+# Data sources: MYC-BASP1-PHB RNA expression
+
+## Cell lines:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=ccle_broad_2019%2Ccellline_ccle_broad%2Ccellline_nci60&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Lymphoid patients:
+## Lymphoid patients:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=all_stjude_2015%2Call_stjude_2016%2Clcll_broad_2013%2Ccll_broad_2015%2Ccll_iuopa_2015%2Ccllsll_icgc_2011%2Cctcl_columbia_2015%2Cdlbcl_dfci_2018%2Cdlbc_broad_2012%2Cdlbcl_duke_2017%2Cdlbc_tcga_pan_can_atlas_2018%2Cnhl_bcgsc_2013%2Cmcl_idibips_2013%2Cmbn_mdacc_2013%2Cmm_broad%2Cnhl_bcgsc_2011%2Call_phase2_target_2018_pub%2Cpcnsl_mayo_2015&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
 ## Myeloid patients:
@@ -11,55 +13,50 @@ https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2
 ## Bowel patients:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=coad_caseccc_2015%2Ccoad_cptac_2019%2Ccoadread_dfci_2016%2Ccoadread_genentech%2Ccoadread_tcga_pan_can_atlas_2018%2Ccoadread_mskcc%2Ccrc_msk_2017%2Crectal_msk_2019&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-
-====================================================================
-====================================================================
-
-# Data sources: BASP1 absolute values
 ## Glioma patients:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=odg_msk_2017%2Clgg_tcga_pan_can_atlas_2018%2Cgbm_mayo_pdx_sarkaria_2019%2Cgbm_columbia_2019%2Cgbm_tcga_pan_can_atlas_2018%2Cglioma_msk_2018%2Cglioma_mskcc_2019%2Clgg_ucsf_2014%2Cmbl_broad_2012%2Cmbl_icgc%2Cmbl_pcgp%2Cmbl_sickkids_2016%2Clgggbm_tcga_pub%2Cpcpg_tcga%2Cpast_dkfz_heidelberg_2013&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Thyroid:
+## Thyroid:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=thyroid_mskcc_2016%2Cthca_tcga_pan_can_atlas_2018&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Lung: 
+## Lung: 
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=luad_broad%2Cluad_mskcc_2015%2Cluad_oncosg_2020%2Cluad_tcga_pan_can_atlas_2018%2Cluad_tsp%2Clusc_tcga_pan_can_atlas_2018%2Clung_msk_2017%2Cnsclc_mskcc_2018%2Cnsclc_pd1_msk_2018%2Cnsclc_tracerx_2017%2Cnsclc_unito_2016%2Cnsclc_mskcc_2015%2Cnsclc_tcga_broad_2016%2Csclc_clcgp%2Csclc_jhu%2Csclc_ucologne_2015%2Csclc_cancercell_gardner_2017%2Clung_msk_pdx&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Stomach:
+## Stomach:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=stad_oncosg_2018%2Cstad_pfizer_uhongkong%2Cstad_tcga_pan_can_atlas_2018%2Cstad_utokyo%2Cstad_uhongkong&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Liver:
+## Liver:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=liad_inserm_fr_2014%2Chcc_mskimpact_2018%2Chcc_inserm_fr_2015%2Chcc_msk_venturaa_2018%2Clihc_amc_prv%2Clihc_riken%2Clihc_tcga_pan_can_atlas_2018&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Pancreas:
+## Pancreas:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=paac_jhu_2014%2Cpact_jhu_2011%2Cpanet_shanghai_2013%2Cpaad_icgc%2Cpaad_qcmg_uq_2016%2Cpaad_tcga_pan_can_atlas_2018%2Cpaad_utsw_2015%2Cpanet_jhu_2011%2Cpanet_arcnet_2017&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Prostate:
+## Prostate:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=prad_mich%2Cprad_su2c_2019%2Cprad_su2c_2015%2Cprad_mcspc_mskcc_2020%2Cnepc_wcm_2016%2Cprad_broad_2013%2Cprad_broad%2Cprad_cpcg_2017%2Cprad_fhcrc%2Cprad_cdk12_mskcc_2020%2Cprad_mskcc%2Cprad_mskcc_2014%2Cprad_p1000%2Cprad_eururol_2017%2Cprad_tcga_pan_can_atlas_2018%2Cprad_mskcc_cheny1_organoids_2014%2Cprostate_dkfz_2018%2Cprad_msk_2019%2Cprad_mskcc_2017%2Cprad_mpcproject_2018&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Testis:
+## Testis:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=gct_msk_2016%2Cgct_msk_2020%2Ctgct_tcga_pan_can_atlas_2018&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Melanoma:
+## Melanoma:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=mel_tsam_liang_2017%2Cdesm_broad_2015%2Cskcm_broad_dfarber%2Cskcm_mskcc_2014%2Cskcm_dfci_2015%2Cskcm_vanderbilt_mskcc_2015%2Cmel_ucla_2016%2Cskcm_broad%2Cskcm_tcga_pan_can_atlas_2018%2Cskcm_yale%2Cskcm_broad_brafresist_2012&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Endometrial cancer:
+## Endometrial cancer:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=ucec_msk_2018%2Cucec_tcga_pan_can_atlas_2018&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Head and Neck:
+## Head and Neck:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=hnc_mskcc_2016%2Chnsc_broad%2Chnsc_jhu%2Chnsc_tcga_pan_can_atlas_2018%2Chnsc_mdanderson_2013&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Kidney:
+## Kidney:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=ccrcc_dfci_2019%2Ckich_tcga_pan_can_atlas_2018%2Ckirc_bgi%2Cccrcc_irc_2014%2Ckirc_tcga_pan_can_atlas_2018%2Ckirp_tcga_pan_can_atlas_2018%2Cccrcc_utokyo_2013%2Cnccrcc_genentech_2014%2Curcc_mskcc_2016&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Urothelial:
+## Urothelial:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=blca_cornell_2016%2Cutuc_mskcc_2015%2Cutuc_cornell_baylor_mdacc_2019%2Cutuc_msk_2019%2Cutuc_pdx_msk_2019%2Cblca_dfarber_mskcc_2014%2Cblca_bgi%2Cblca_tcga_pan_can_atlas_2018&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Breast:
+## Breast:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=brca_metabric%2Cbreast_msk_2018%2Cbreast_alpelisib_2020%2Cbrca_mskcc_2019%2Cbrca_smc_2018%2Cbrca_bccrc_xenograft_2014%2Cbfn_duke_nus_2015%2Cbrca_bccrc%2Cbrca_broad%2Cbrca_sanger%2Cbrca_tcga_pan_can_atlas_2018%2Cbrca_igr_2015%2Cbrca_mbcproject_wagle_2017&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&profileFilter=0&tab_index=tab_visualize
 
-##Cervix:
+## Cervix:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=cesc_tcga_pan_can_atlas_2018&case_set_id=cesc_tcga_pan_can_atlas_2018_3way_complete&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=cesc_tcga_pan_can_atlas_2018_gistic&genetic_profile_ids_PROFILE_MRNA_EXPRESSION=cesc_tcga_pan_can_atlas_2018_rna_seq_v2_mrna_median_Zscores&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=cesc_tcga_pan_can_atlas_2018_mutations&profileFilter=0&tab_index=tab_visualize
 
-##Ovary:
+## Ovary:
 https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=ov_tcga_pan_can_atlas_2018&case_set_id=ov_tcga_pan_can_atlas_2018_cnaseq&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&geneset_list=%20&genetic_profile_ids_PROFILE_COPY_NUMBER_ALTERATION=ov_tcga_pan_can_atlas_2018_gistic&genetic_profile_ids_PROFILE_MUTATION_EXTENDED=ov_tcga_pan_can_atlas_2018_mutations&profileFilter=0&tab_index=tab_visualize

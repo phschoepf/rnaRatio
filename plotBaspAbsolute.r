@@ -16,7 +16,7 @@ cellplot <-
     na.rm = TRUE
   )) +
   theme_classic(base_size = 20) +
-  coord_cartesian(xlim = (c(0,700))) + 
+  coord_cartesian(xlim = (c(0,700)), expand = F) + 
   labs(title = "Cell lines",
        y = "" ,
        x = "BASP1 RNA expression, RNAseq RPKM") +
@@ -41,7 +41,7 @@ patplot <-
     na.rm = TRUE
   )) +
   theme_classic(base_size = 20) +
-  coord_cartesian(xlim = (c(-0, 15000))) +
+  coord_cartesian(xlim = (c(-0, 15000)), expand = F) +
   labs(title = "Patient samples",
        y = "" ,
        x = "BASP1 RNA expression, RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)") +
@@ -77,11 +77,6 @@ png("images/basp1_absolute_combined.png",
 grid.arrange(
   aligned[[1]],
   aligned[[2]],
-  textGrob(
-    "Cell lines: RNAseq RPKM, patient data: RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)",
-    x = 1,
-    hjust = 1
-  ),
-  layout_matrix = rbind(1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3)
+  layout_matrix = rbind(1, 2)
 )
 dev.off()

@@ -48,10 +48,9 @@ patplot <-
     na.rm = TRUE
   )) +
   theme_classic(base_size = 20) +
-  coord_cartesian(xlim = (c(-2,4))) +
-  labs(title = "Patient samples",
-       y = "" ,
-       x = expression(paste(log[10](MYC / BASP1), ", RNAseq v2 RSEM"))) +
+  coord_cartesian(xlim = (c(-2,4)), expand = F) +
+  labs(y = "" ,
+       x = expression(paste(log[10](MYC / BASP1), " RNA expression, RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)"))) +
   theme(axis.text.y = element_text(size = 20)) +
   stat_boxplot(geom = "errorbar", width = 0.6, lwd = 1) +
   geom_boxplot(outlier.shape = NA,

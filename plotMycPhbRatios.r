@@ -16,8 +16,8 @@ cellplot <-
     na.rm = TRUE
   )) +
   theme_classic(base_size = 20) +
-  coord_cartesian(xlim = (c(-3,2))) +
-  labs(title = "Cell lines", y = "", x = expression(paste(log[10](MYC / PHB), ", RNAseq RPKM"))) +
+  coord_cartesian(xlim = (c(-3,2)), expand = F) +
+  labs(title = "Cell lines", y = "", x = expression(paste(log[10](MYC / PHB), " RNA expression, RNAseq RPKM"))) +
   stat_boxplot(geom = "errorbar", width = 0.6, lwd = 1) +
   geom_boxplot(outlier.shape = NA,
                lwd = 1,
@@ -37,11 +37,11 @@ patplot <-
     x = log10(MYC / PHB),
     na.rm = TRUE
   )) +
-  coord_cartesian(xlim = (c(-3,2))) + 
+  coord_cartesian(xlim = (c(-3,2)), expand = F) + 
   theme_classic(base_size = 20) +
   labs(title = "Patient samples",
        y = "" ,
-       x = expression(paste(log[10](MYC / PHB), ", RNAseq v2 RSEM"
+       x = expression(paste(log[10](MYC / PHB), " RNA expression, RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)"
        ))) +
   stat_boxplot(geom = "errorbar", width = 0.6, lwd = 1) +
   geom_boxplot(outlier.shape = NA,
@@ -65,6 +65,5 @@ dev.off()
 png("images/myc_phb_ratios_combined.png", width = 2400, height = 2400)
 grid.arrange(aligned[[1]],
              aligned[[2]],
-             textGrob("Cell lines: RNAseq RPKM, patient data: RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)", x = 1, hjust = 1),
-             layout_matrix = rbind(1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3))
+             layout_matrix = rbind(1, 2))
 dev.off()
