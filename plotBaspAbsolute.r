@@ -6,60 +6,82 @@ library(gtable)
 library(tidyverse)
 library(tibble)
 
-INPUT_DATA_DIR <- "input_data/"
+source("parseInputData.r")
 
-inputPatients <- dir(path = INPUT_DATA_DIR, pattern = "*RSEM*")
-
-# parse and filter patient file
-parseCsv <- function(file) {
-  csv <- read.delim(paste0(INPUT_DATA_DIR, file))
-  csv[which(csv$MYC != "NA" &
-              csv$MYC != 0 &
-              csv$BASP1 != "NA" & csv$BASP1 != 0),] #filter invalid values
-}
-
-allPatientData <- data.frame()
-#annotate patient data w/ origin and combine
-for (filename in inputPatients) {
-  dataframe <- parseCsv(filename)
-  dataframe["Origin"] = strsplit(filename, "_.*")[[1]] #add row with patient cancer origin
-  allPatientData <-
-    rbind(allPatientData, dataframe) #add data to global list
-}
-for (origin in unique(allPatientData$Origin)) {
-  numOfOccurances = sum(allPatientData$Origin == origin)
-  allPatientData$Origin <-
-    gsub(
-      paste0("\\b", origin, "\\b"),
-      paste0(origin, " (n = ", numOfOccurances, ")"),
-      allPatientData$Origin
-    )
-}
-
-# plotting patients
-patplot <-
-  ggplot(allPatientData, aes(
-    x = reorder(Origin, -BASP1, FUN = "median"),
-    y = BASP1,
+# plotting cells
+cellplot <-
+  ggplot(cellLines, aes(
+    y = reorder(Origin,-BASP1, FUN = median),
+    x = BASP1,
     na.rm = TRUE
   )) +
-  ylim(0,15000) +
-  labs(title = "Patient samples",
-       x = "" ,
-       y = "BASP1 RNA expression, RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)"
-       ) +
+  theme_classic(base_size = 20) +
+  coord_cartesian(xlim = (c(0,700))) + 
+  labs(title = "Cell lines",
+       y = "" ,
+       x = "BASP1 RNA expression, RNAseq RPKM") +
   stat_boxplot(geom = "errorbar", width = 0.6, lwd = 1) +
   geom_boxplot(outlier.shape = NA,
                lwd = 1,
                fatten = 1.2) +
   geom_jitter(
     shape = 16,
-    position = position_jitter(w = 0.25, h = 0),
+    position = position_jitter(w = 0, h = 0.15),
+    size = 0.9,
+    color = "#f39200"
+  ) +
+  geom_point(data = selectedCellLines, color = "red", size = 4) +
+  geom_text(data = selectedCellLines, aes(label = Name), nudge_x = 8, nudge_y = 0.25)
+
+# plotting patients
+patplot <-
+  ggplot(allPatientData, aes(
+    y = reorder(Origin,-BASP1, FUN = "median"),
+    x = BASP1,
+    na.rm = TRUE
+  )) +
+  theme_classic(base_size = 20) +
+  coord_cartesian(xlim = (c(-0, 15000))) +
+  labs(title = "Patient samples",
+       y = "" ,
+       x = "BASP1 RNA expression, RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)") +
+  theme(axis.text.y = element_text(size = 20)) +
+  stat_boxplot(geom = "errorbar", width = 0.6, lwd = 1) +
+  geom_boxplot(outlier.shape = NA,
+               lwd = 1,
+               fatten = 1.2) +
+  geom_jitter(
+    shape = 16,
+    position = position_jitter(w = 0, h = 0.15),
     size = 0.8,
     color = "#f39200"
   )
 
 #export to png
-png("images/basp1_pat_absolute.png", width = 2300, height = 1000)
-grid.arrange(patplot)
+aligned <- align_plots(cellplot, patplot, align = "v", axis = "lr")
+png(
+  "images/basp1_absolute_cells_annotation.png",
+  width = 2400,
+  height = 1100
+)
+plot(aligned[[1]])
+dev.off()
+png("images/basp1_absolute_patients.png",
+    width = 2400,
+    height = 1100)
+plot(aligned[[2]])
+dev.off()
+png("images/basp1_absolute_combined.png",
+    width = 2400,
+    height = 2400)
+grid.arrange(
+  aligned[[1]],
+  aligned[[2]],
+  textGrob(
+    "Cell lines: RNAseq RPKM, patient data: RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)",
+    x = 1,
+    hjust = 1
+  ),
+  layout_matrix = rbind(1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3)
+)
 dev.off()
