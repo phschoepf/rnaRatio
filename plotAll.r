@@ -1,0 +1,5 @@
+source("plotMycBaspRatios.r")
+source("plotMycPhbRatios.r")
+source("plotMycAbsolute.r")
+source("plotBaspAbsolute.r")
+source("RPKMvsRSEMdemo.r")

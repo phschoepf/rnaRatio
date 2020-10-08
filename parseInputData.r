@@ -50,6 +50,6 @@ for (origin in unique(cellLines$Origin)) {
 
 #get subset of selected cell lines
 selectedCellLines <- cellLines %>% 
-  filter(grepl("K562|MOLT4|SW480|MCF7|LN18|HEK293T|HL60|HeLa", SAMPLE_ID, ignore.case = T))%>% 
+  filter(grepl("K562|MOLT4|SW480|MCF7|LN18|HEK293T|HL60|HeLa|HT29|CACO2|A375", SAMPLE_ID, ignore.case = T))%>% 
   mutate(Name = gsub("_.*", "", SAMPLE_ID, ignore.case = T))
 
