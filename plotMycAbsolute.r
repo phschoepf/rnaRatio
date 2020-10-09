@@ -36,7 +36,17 @@ cellplot <-
     aes(label = Name),
     nudge_x = 4,
     nudge_y = 0.25
+  ) +
+  annotate(
+    geom = "table",
+    x = Inf,
+    y = Inf,
+    label = list(
+      selectedCellLines %>% select(Name, MYC) %>% mutate(MYC = round(MYC, 2))
+    ),
+    size = 10
   )
+
 
 
 # plotting patients
@@ -78,9 +88,7 @@ dev.off()
 png("images/myc_absolute_combined.png",
     width = 2400,
     height = 2400)
-grid.arrange(
-  aligned[[1]],
-  aligned[[2]],
-  layout_matrix = rbind(1, 2)
-)
+grid.arrange(aligned[[1]],
+             aligned[[2]],
+             layout_matrix = rbind(1, 2))
 dev.off()

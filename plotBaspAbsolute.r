@@ -5,18 +5,19 @@ library(gridExtra)
 library(gtable)
 library(tidyverse)
 library(tibble)
+library(ggpmisc)
 
 source("parseInputData.r")
 
 # plotting cells
 cellplot <-
   ggplot(cellLines, aes(
-    y = reorder(Origin,-BASP1, FUN = median),
+    y = reorder(Origin, -BASP1, FUN = median),
     x = BASP1,
     na.rm = TRUE
   )) +
   theme_classic(base_size = 20) +
-  coord_cartesian(xlim = (c(0,700)), expand = F) + 
+  coord_cartesian(xlim = (c(0, 700)), expand = F) +
   labs(title = "Cell lines",
        y = "" ,
        x = "BASP1 RNA expression, RNAseq RPKM") +
@@ -31,12 +32,26 @@ cellplot <-
     color = "#f39200"
   ) +
   geom_point(data = selectedCellLines, color = "red", size = 4) +
-  geom_text(data = selectedCellLines, aes(label = Name), nudge_x = 8, nudge_y = 0.25)
+  geom_text(
+    data = selectedCellLines,
+    aes(label = Name),
+    nudge_x = 8,
+    nudge_y = 0.25
+  ) +
+  annotate(
+    geom = "table",
+    x = Inf,
+    y = Inf,
+    label = list(
+      selectedCellLines %>% select(Name, BASP1) %>% mutate(BASP1 = round(BASP1, 2))
+    ),
+    size = 10
+  )
 
 # plotting patients
 patplot <-
   ggplot(allPatientData, aes(
-    y = reorder(Origin,-BASP1, FUN = "median"),
+    y = reorder(Origin, -BASP1, FUN = "median"),
     x = BASP1,
     na.rm = TRUE
   )) +
@@ -74,9 +89,7 @@ dev.off()
 png("images/basp1_absolute_combined.png",
     width = 2400,
     height = 2400)
-grid.arrange(
-  aligned[[1]],
-  aligned[[2]],
-  layout_matrix = rbind(1, 2)
-)
+grid.arrange(aligned[[1]],
+             aligned[[2]],
+             layout_matrix = rbind(1, 2))
 dev.off()

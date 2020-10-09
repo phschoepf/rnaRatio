@@ -1,6 +1,7 @@
 # Common input data parser for all plotting scripts.
 # Author: Philemon Schöpf philemon.schoepf@student.uibk.ac.at
 
+DO_FILTER = TRUE
 INPUT_DATA_DIR = "input_data/"
 
 inputCellLines <-
@@ -49,7 +50,14 @@ for (origin in unique(cellLines$Origin)) {
 }
 
 #get subset of selected cell lines
-selectedCellLines <- cellLines %>% 
-  filter(grepl("K562|MOLT4|SW480|MCF7|LN18|HEK293T|HL60|HeLa|HT29|CACO2|A375", SAMPLE_ID, ignore.case = T))%>% 
-  mutate(Name = gsub("_.*", "", SAMPLE_ID, ignore.case = T))
-
+if(DO_FILTER) {
+  selectedCellLines <- cellLines %>% 
+    filter(grepl("K562|MOLT4|SW480|MCF7|LN18|HEK293T|HL60|HeLa|HT29|CACO2|A375", SAMPLE_ID, ignore.case = T))%>% 
+    mutate(Name = gsub("_.*", "", SAMPLE_ID, ignore.case = T))
+  
+  #subset to interesting cancer types
+  allPatientData <- allPatientData %>% 
+    filter(grepl("bowel_patients|myeloid_patients|lymphoid_patients|cervical_patients|breast_patients|cns_patients|melanoma_patients", Origin, ignore.case = T))
+  cellLines <- cellLines %>%
+    filter(grepl("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE|LARGE_INTESTINE|CERVIX|BREAST|SKIN|CENTRAL_NERVOUS_SYSTEM", Origin, ignore.case = T))
+}
