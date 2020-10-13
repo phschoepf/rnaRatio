@@ -3,13 +3,20 @@ library(tidyr)
 library(cBioPortalData)
 library(AnVIL)
 
-################
-# input vars  #
-################
-selStudyList = c("gbm_tcga_pan_can_atlas_2018", "chol_nccs_2013") # a vector of studyIds to investigate (pull e.g. from manually imported data)
-selGenes = c("MYC", "BASP1", "PHB", "MTOR") # a vector of hugoGeneSymbols
-
 cbio <- cBioPortal()
+
+getStudiesFromUrl <- function(url) {
+  split <- url %>%
+    gsub(pattern = "%25", replacement = "%") %>%
+    gsub(pattern = "%2C", replacement = ",") %>%
+    gsub(pattern = "%20", replacement = " ") %>%
+    strsplit("&")
+  studyList <- split[[1]][4] %>%
+    gsub(pattern = "cancer_study_list=", replacement = "") %>%
+    strsplit(",")
+  return(studyList[[1]])
+  
+}
 
 # Generates a translation table for Entrez to Hugo gene symbols.
 # Making this table from scratch takes a long time, therefore the function caches its output in the PWD.
@@ -41,15 +48,14 @@ generateTranslatorTable <- function(inputGeneList) {
   return(translatorTable)
 }
 
-
-getMolecularData <- function(study) {
+getMolecularData <- function(study, molecularProfile, translatorTable) {
   # make sampleId list
   samples <- allSamples(cbio, studyId = study)
   
   # get mRNA expression molecular profiles, or empty tibble if there are no data
   rnaProfiles <-
     molecularProfiles(cbio, studyId = study, projection = "ID") %>%
-    filter(grepl("_rna_seq_v2_mrna$", molecularProfileId))
+    filter(grepl(paste0("_", molecularProfile, "$"), molecularProfileId))
   
   #return if no RNA expression profile exists
   if (!isEmpty(rnaProfiles$molecularProfileId)) {
@@ -67,12 +73,12 @@ getMolecularData <- function(study) {
   }
 }
 
-translate <- function(input) {
+translate <- function(input, table) {
   if(class(input) == "integer") { # translate from Entrez to Hugo
-    return(translatorTable[translatorTable$entrezGeneId == input, ]$hugoGeneSymbol)
+    return(table[table$entrezGeneId == input, ]$hugoGeneSymbol)
   }
   else if(class(input) == "character") { # translate from Hugo to Entrez
-    return(translatorTable[translatorTable$hugoGeneSymbol == input, ]$entrezGeneId)
+    return(table[table$hugoGeneSymbol == input, ]$entrezGeneId)
   }
   else {
     return(NULL)
@@ -82,17 +88,38 @@ translate <- function(input) {
 #################
 # main function #
 #################
-
-translatorTable <- generateTranslatorTable(selGenes)
-
-# get data from all selected studies
-all.data <- tibble()
-for (study in selStudyList) {
-  new.data <- getMolecularData(study)
-  all.data <- rbind(all.data, new.data[[1]])
+fetchPat <- function(url, selGenes) {
+  translatorTable <- generateTranslatorTable(selGenes)
+  selStudyList <- getStudiesFromUrl(url)
+  
+  # get data from all selected studies
+  all.data <- tibble()
+  for (study in selStudyList) {
+    new.data <- getMolecularData(study, molecularProfile = "rna_seq_v2_mrna", translatorTable =  translatorTable)
+    all.data <- rbind(all.data, new.data[[1]])
+  }
+  # restructure output table
+  wideOutput <- all.data %>%
+    mutate(all.data, hugoGeneSymbol = sapply(X = entrezGeneId, FUN = translate, translatorTable)) %>%
+    select(studyId, sampleId, hugoGeneSymbol, value) %>%
+    pivot_wider(names_from = hugoGeneSymbol, values_from = value)
+  return(wideOutput)
 }
-# restructure output table
-wideOutput <- all.data %>% 
-  mutate(all.data, hugoGeneSymbol = sapply(entrezGeneId, translate)) %>%
-  select(sampleId, hugoGeneSymbol, value) %>% 
-  pivot_wider(names_from = hugoGeneSymbol, values_from = value)
+
+fetchCells <- function(url, selGenes) {
+  translatorTable <- generateTranslatorTable(selGenes)
+  selStudyList <- getStudiesFromUrl(url)
+  
+  # get data from all selected studies
+  all.data <- tibble()
+  for (study in selStudyList) {
+    new.data <- getMolecularData(study, molecularProfile = "rna_seq_mrna", translatorTable = translatorTable)
+    all.data <- rbind(all.data, new.data[[1]])
+  }
+  # restructure output table
+  wideOutput <- all.data %>%
+    mutate(all.data, hugoGeneSymbol = sapply(X = entrezGeneId, FUN = translate, translatorTable)) %>%
+    select(studyId, sampleId, hugoGeneSymbol, value) %>%
+    pivot_wider(names_from = hugoGeneSymbol, values_from = value)
+  return(wideOutput)
+}
