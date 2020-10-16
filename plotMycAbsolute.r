@@ -1,14 +1,3 @@
-library(ggplot2)
-library(cowplot)
-library(grid)
-library(gridExtra)
-library(gtable)
-library(tidyverse)
-library(tibble)
-library(ggpmisc)
-
-source("parseInputData.r")
-
 # plotting cells
 cellplot <-
   ggplot(cellLines, aes(
