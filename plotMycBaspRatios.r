@@ -1,3 +1,5 @@
+source("plotMethods.r")
+
 # plotting cells
 cellplot <-
   ggplot(cellLines, aes(
@@ -61,23 +63,4 @@ patplot <-
   )
 
 #export to png
-aligned <- align_plots(cellplot, patplot, align = "v", axis = "lr")
-png(
-  "images/myc_basp1_ratios_cells_annotation.png",
-  width = 2400,
-  height = 1100
-)
-plot(aligned[[1]])
-dev.off()
-png("images/myc_basp1_ratios_patients.png",
-    width = 2400,
-    height = 1100)
-plot(aligned[[2]])
-dev.off()
-png("images/myc_basp1_ratios_combined.png",
-    width = 2400,
-    height = 2400)
-grid.arrange(aligned[[1]],
-             aligned[[2]],
-             layout_matrix = rbind(1, 2))
-dev.off()
+exportToPng(baseName = "myc_basp1_ratios", cellplot, patplot)
