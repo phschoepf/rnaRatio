@@ -27,30 +27,26 @@ plotPatients <- function(in_data, gene1, gene2 = NULL, lims) {
   if(is.null(gene2)) {
     # only 1 gene, plot absolutes
     plotTitle <- paste0(gene1, " RNA expression")
-    axisTitle <- "RNA expression, RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)"
+    axisTitle <- "RNA expression, RNAseq v2 RSEM"
     plotBy <- expr(!!sym(gene1))
     
   } 
   else {
     # 2 genes, plot gene1 to gene2 ratio on log scale
     plotTitle <- paste0(gene1, " / ", gene2, " RNA expression ratio")
-    axisTitle <- expression(paste(log[10], " RNA expression ratio, RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)"))
+    axisTitle <- expression(paste(log[10], " RNA expression ratio, RNAseq v2 RSEM")) #M (Batch normalized from Illumina HiSeq_RNASeqV2)
     plotBy <- expr(log10(!!sym(gene1) / !!sym(gene2)))
   }
   
-  plotdata <- in_data %>% 
-    group_by(Origin) %>% 
-    arrange(desc(!!plotBy, by_group = T)) %>%
-    mutate(toPlot = !!plotBy)
-  
   patplot <-
-    ggplot(plotdata, aes(
-      x = Origin,
+    ggplot(in_data, aes(
+      x = reorder(Origin, -(!!plotBy), FUN = median),
       y = !!plotBy,
       na.rm = TRUE
     )) +
     coord_cartesian(ylim = lims) +
     theme_grey(base_size = 5) +
+    rotate_x_text(25, hjust = 1) +
     labs(
       title = plotTitle,
       x = "",
@@ -63,7 +59,7 @@ plotPatients <- function(in_data, gene1, gene2 = NULL, lims) {
       color = "#f39200"
     ) +
     stat_boxplot(geom = "errorbar", width = 0.6) +
-    geom_boxplot(alpha = 0.8,
+    geom_boxplot(alpha = 0.4,
                  outlier.shape = NA,
                  fatten = 1.2
     ) 
@@ -75,30 +71,26 @@ plotCells <- function(in_data, gene1, gene2 = NULL, lims) {
   if(is.null(gene2)) {
     # only 1 gene, plot absolutes
     plotTitle <- paste0(gene1, " RNA expression")
-    axisTitle <- "RNA expression, RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)"
+    axisTitle <- "RNA expression, RNAseq RPKM"
     plotBy <- expr(!!sym(gene1))
     
   } 
   else {
     # 2 genes, plot gene1 to gene2 ratio on log scale
     plotTitle <- paste0(gene1, " / ", gene2, " RNA expression ratio")
-    axisTitle <- expression(paste(log[10], " RNA expression ratio, RNAseq v2 RSEM (Batch normalized from Illumina HiSeq_RNASeqV2)"))
+    axisTitle <- expression(paste(log[10], " RNA expression ratio, RNAseq RPKM"))
     plotBy <- expr(log10(!!sym(gene1) / !!sym(gene2)))
   }
   
-  plotdata <- in_data %>% 
-    group_by(Origin) %>% 
-    arrange(desc(!!plotBy, by_group = T)) %>%
-    mutate(toPlot = !!plotBy)
-  
   cellplot <-
-    ggplot(plotdata, aes(
-      x = Origin,
+    ggplot(in_data, aes(
+      x = reorder(Origin, -MYC/BASP1, FUN = median),
       y = !!plotBy,
       na.rm = TRUE
     )) +
     coord_cartesian(ylim = lims) +
     theme_grey(base_size = 5) +
+    rotate_x_text(25, hjust = 1) +
     labs(
       title = plotTitle,
       x = "",
@@ -111,15 +103,17 @@ plotCells <- function(in_data, gene1, gene2 = NULL, lims) {
       color = "#f39200"
     ) +
     stat_boxplot(geom = "errorbar", width = 0.6) +
-    geom_boxplot(alpha = 0.8,
+    geom_boxplot(alpha = 0.5,
                  outlier.shape = NA,
                  fatten = 1.2) +
-    geom_point(data = selectedCellLines, color = "red", size = 2) +
-    geom_text(
+    geom_point(data = selectedCellLines, color = "red", size = 1) +
+    geom_label_repel(
       data = selectedCellLines,
       aes(label = Name),
-      nudge_x = 0.5,
-      nudge_y = 0
+      size = 1.2,
+      label.padding = unit(0.12, "lines"),
+      nudge_x = 0.3,
+      direction = "y"
     ) + 
     annotate(
       geom = "table",

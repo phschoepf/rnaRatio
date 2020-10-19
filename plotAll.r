@@ -4,9 +4,11 @@ library(cowplot)
 library(grid)
 library(gridExtra)
 library(gtable)
+library(ggpubr)
 library(tidyverse)
 library(tibble)
 library(ggpmisc)
+library(ggrepel)
 
 #source("parseInputData.r")
 source("plotMethods.r")
@@ -29,10 +31,11 @@ basp1_pat <- plotPatients(allPatientData, "BASP1", lims =  c(NA,15000))
 
 #combined large plot
 tiff("allPlots.tiff", width = 170, height = 200, units = "mm", res = 300)
-grid.arrange(myc_cell, myc_pat,
-             basp1_cell, basp1_pat,
-             mycbasp_cell, mycbasp_pat,
-             layout_matrix = cbind(c(1,3,5), c(2,4,6))
+aligned_plots <- align_plots( mycbasp_cell, mycbasp_pat,
+                              myc_cell, myc_pat,
+                              basp1_cell, basp1_pat,
+                              align = "h", axis = "tb"
 )
+ggarrange(plotlist = aligned_plots, nrow = 3, ncol = 2)
 dev.off()
 #source("RPKMvsRSEMdemo.r") does not work currently w/ new APIrequest input system
