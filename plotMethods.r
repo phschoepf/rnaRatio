@@ -2,24 +2,20 @@
 # @author Philemon Schöpf <philemon.schoepf@student.ubik.ac.at>
 
 OUTPUT_PATH = "images/"
-WIDTH = 2400
-HEIGHT = 1100
+OUTPUT_FORMAT = "png"
+
+#image dims in mm (300 dpi)
+WIDTH = 100
+HEIGHT = 40
 
 # Arrange the plots and export to PNG.
 # Generates 3 files: cell lines, patients, and a combined image.
 exportToPng <- function(baseName, cellplot, patplot) {
   aligned <- align_plots(cellplot, patplot, align = "v", axis = "lr")
-  png(paste0(OUTPUT_PATH, baseName, "_cells_annotation.png"), width = WIDTH, height = HEIGHT)
-  plot(aligned[[1]])
-  dev.off()
-  png(paste0(OUTPUT_PATH, baseName, "_patients.png"), width = WIDTH, height = HEIGHT)
-  plot(aligned[[2]])
-  dev.off()
-  png(paste0(OUTPUT_PATH, baseName, "_combined.png"), width = WIDTH, height = 2 * HEIGHT)
-  grid.arrange(aligned[[1]],
-               aligned[[2]],
-               layout_matrix = rbind(1, 2))
-  dev.off()
+  ggsave(paste0(OUTPUT_PATH, baseName, "_cells_annotation.", OUTPUT_FORMAT), plot = aligned[[1]], width = WIDTH, height = HEIGHT, units = "mm")
+  ggsave(paste0(OUTPUT_PATH, baseName, "_patients.", OUTPUT_FORMAT), plot = aligned[[2]], width = WIDTH, height = HEIGHT, units = "mm")
+  ggarrange(plotlist = aligned, nrow = 1, ncol = 2)
+  ggsave(paste0(OUTPUT_PATH, baseName, "_combined.", OUTPUT_FORMAT), width = WIDTH, height = 2* HEIGHT, units = "mm")
 }
 
 
@@ -46,7 +42,7 @@ plotPatients <- function(in_data, gene1, gene2 = NULL, lims) {
     )) +
     coord_cartesian(ylim = lims) +
     theme_grey(base_size = 5) +
-    rotate_x_text(25, hjust = 1) +
+    rotate_x_text(30, hjust = 1) +
     labs(
       title = plotTitle,
       x = "",
@@ -81,16 +77,17 @@ plotCells <- function(in_data, gene1, gene2 = NULL, lims) {
     axisTitle <- expression(paste(log[10], " RNA expression ratio, RNAseq RPKM"))
     plotBy <- expr(log10(!!sym(gene1) / !!sym(gene2)))
   }
-  
+             
   cellplot <-
     ggplot(in_data, aes(
-      x = reorder(Origin, -MYC/BASP1, FUN = median),
+      x = reorder(Origin, -(!!plotBy), FUN = median),
       y = !!plotBy,
       na.rm = TRUE
     )) +
     coord_cartesian(ylim = lims) +
     theme_grey(base_size = 5) +
-    rotate_x_text(25, hjust = 1) +
+    theme(plot.margin = margin(l = 35))+
+    rotate_x_text(30, hjust = 1) +
     labs(
       title = plotTitle,
       x = "",
@@ -114,14 +111,21 @@ plotCells <- function(in_data, gene1, gene2 = NULL, lims) {
       label.padding = unit(0.12, "lines"),
       nudge_x = 0.3,
       direction = "y"
-    ) + 
-    annotate(
-      geom = "table",
-      x = Inf,
-      y = Inf,
-      label = list(
-        selectedCellLines %>% mutate(rounded = round(!!plotBy, 2)) %>% select(Name, rounded) 
-      ),
-      size = 0.7
-    )
+    ) 
+}
+
+# Plot a table of expression values for certain cells. Input selected cell lines (as table from parseInputData.r),
+# and 2 genes. The table will contain the 2 absolute expression values and the log-fold ratio.
+plotCellsTable <- function(in_data, gene1, gene2) {
+  
+    firstgene <- expr(!!sym(gene1))
+    secondgene <- expr(!!sym(gene2))
+    ratio <- expr(log10(!!sym(gene1) / !!sym(gene2)))
+    
+  selectedCellsTable <- in_data %>% 
+    transmute(Name, !!firstgene, !!secondgene, !!ratio) %>%
+    mutate_if(is.numeric, round, digits = 2) %>% 
+    arrange(Name)
+  
+  ggtexttable(t(selectedCellsTable), theme = ttheme("classic", base_size = 5))
 }

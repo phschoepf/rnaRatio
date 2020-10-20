@@ -1,7 +1,6 @@
-# Common input data parser for all plotting scripts.
+# Parses data downloaded by cBioPortalData into plottable table.
 # Author: Philemon Schöpf philemon.schoepf@student.uibk.ac.at
 
-library(tibble)
 source("fetchCbioData.r")
 
 #################################
@@ -58,16 +57,19 @@ for (origin in unique(cellLines$Origin)) {
     )
 }
 
+#subset to interesting cancer types, and rename them
+allPatientData <- allPatientData %>%
+  filter(grepl("Bowel|Myeloma|Lymphoma|Cervix|Breast|Glioma|Melanoma", Origin, ignore.case = T))
+cellLines <- cellLines %>%
+  filter(grepl("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE|LARGE_INTESTINE|CERVIX|BREAST|SKIN|CENTRAL_NERVOUS_SYSTEM", Origin, ignore.case = T)) %>%
+  mutate(Origin = gsub("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE", "HAEMATOPOIETIC/LYMPHOID_TISSUE", Origin)) %>%
+  mutate(Origin = gsub("_", " ", str_to_sentence(Origin)))
+
 #get subset of selected cell lines
 if(DO_FILTER) {
   selectedCellLines <- cellLines %>% 
     filter(grepl("K562|MOLT4|SW480|MCF7|LN18|HEK293T|HL60|HeLa|HT29|CACO2|A375", sampleId, ignore.case = T))%>% 
     mutate(Name = gsub("_.*", "", sampleId, ignore.case = T))
   
-  #subset to interesting cancer types
-  allPatientData <- allPatientData %>% 
-    filter(grepl("Bowel|Myeloma|Lymphoma|Cervix|Breast|Glioma|Melanoma", Origin, ignore.case = T))
-  cellLines <- cellLines %>%
-    filter(grepl("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE|LARGE_INTESTINE|CERVIX|BREAST|SKIN|CENTRAL_NERVOUS_SYSTEM", Origin, ignore.case = T))
 }
 

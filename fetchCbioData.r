@@ -1,3 +1,6 @@
+# Method script for downloading data from the cBioPortal API.
+# @author Philemon Schöpf <philemon.schoepf@student.ubik.ac.at>
+
 library(tibble)
 library(tidyr)
 library(cBioPortalData)
