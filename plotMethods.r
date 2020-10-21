@@ -1,16 +1,20 @@
 # Method script containing common code shared between all plotting scripts.
 # @author Philemon Schöpf <philemon.schoepf@student.ubik.ac.at>
 
-OUTPUT_PATH = "images/"
-OUTPUT_FORMAT = "png"
-
-#image dims in mm (300 dpi)
-WIDTH = 100
-HEIGHT = 40
+library(tidyverse)
+library(ggpubr)
 
 # Arrange the plots and export to PNG.
 # Generates 3 files: cell lines, patients, and a combined image.
 exportToPng <- function(baseName, cellplot, patplot) {
+  
+  OUTPUT_PATH = "images/"
+  OUTPUT_FORMAT = "png"
+  
+  #image dims in mm (300 dpi)
+  WIDTH = 100
+  HEIGHT = 40
+  
   aligned <- align_plots(cellplot, patplot, align = "v", axis = "lr")
   ggsave(paste0(OUTPUT_PATH, baseName, "_cells_annotation.", OUTPUT_FORMAT), plot = aligned[[1]], width = WIDTH, height = HEIGHT, units = "mm")
   ggsave(paste0(OUTPUT_PATH, baseName, "_patients.", OUTPUT_FORMAT), plot = aligned[[2]], width = WIDTH, height = HEIGHT, units = "mm")

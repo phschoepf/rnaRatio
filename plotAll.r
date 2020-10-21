@@ -2,18 +2,8 @@
 # Set up what to plot here.
 # @author Philemon Schöpf <philemon.schoepf@student.ubik.ac.at>
 
-#load libraries and custom functions
-library(rlang)
-library(ggplot2)
 library(cowplot)
-library(grid)
-library(gridExtra)
-library(gtable)
-library(ggpubr)
 library(tidyverse)
-library(tibble)
-library(ggpmisc)
-library(ggrepel)
 source("plotMethods.r")
 
 #generate input data anew if it doesn't exist

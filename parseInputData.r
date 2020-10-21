@@ -1,6 +1,7 @@
 # Parses data downloaded by cBioPortalData into plottable table.
-# Author: Philemon Schöpf philemon.schoepf@student.uibk.ac.at
+# @author Philemon Schöpf <philemon.schoepf@student.ubik.ac.at>
 
+library(tidyverse)
 source("fetchCbioData.r")
 
 #################################
