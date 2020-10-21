@@ -38,9 +38,9 @@ aligned_plots <- align_plots( mycbasp_cell, mycbasp_pat,
 )
 
 ggarrange(plotlist = aligned_plots, nrow = 3, ncol = 2)
-ggsave("allPlots.tiff", width = 170, height = 190, units = "mm")
+ggsave("images/allPlots.tiff", width = 170, height = 190, units = "mm")
 plotCellsTable(selectedCellLines, "MYC", "BASP1")
-ggsave("cellValueTable.tiff", width = 130, height = 40, units = "mm")
+ggsave("images/cellValueTable.tiff", width = 130, height = 40, units = "mm")
 
 # export study list
 library(cBioPortalData)
