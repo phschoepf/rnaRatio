@@ -3,6 +3,7 @@
 
 library(tidyverse)
 library(ggpubr)
+library(ggrepel)
 
 # Arrange the plots and export to PNG.
 # Generates 3 files: cell lines, patients, and a combined image.

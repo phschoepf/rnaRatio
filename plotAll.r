@@ -41,3 +41,10 @@ ggarrange(plotlist = aligned_plots, nrow = 3, ncol = 2)
 ggsave("allPlots.tiff", width = 170, height = 190, units = "mm")
 plotCellsTable(selectedCellLines, "MYC", "BASP1")
 ggsave("cellValueTable.tiff", width = 130, height = 40, units = "mm")
+
+# export study list
+library(cBioPortalData)
+studies <- getStudies(cBioPortal())
+studyList <- studies[which(studies$studyId %in% unique(allPatientData$studyId)),] %>%
+  select(name, description, citation)
+write.csv(studyList, "studyList.csv")
