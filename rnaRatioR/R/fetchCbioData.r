@@ -1,35 +1,24 @@
-# Method script for downloading data from the cBioPortal API.
-# @author Philemon Schöpf <philemon.schoepf@student.ubik.ac.at>
+# Method script for fetching data from the CBioPortal.
+# Author: Philemon Schoepf <philemon.schoepf@student.ubik.ac.at>
+# Date: 2021-03-19
 
-library(tibble)
+# Imports -----------------------------------------------------------------
+
 library(cBioPortalData)
 library(AnVIL)
 library(org.Hs.eg.db)
-library(dplyr)
 library(httr)
-library(stringr)
+library(tidyverse)
 
-#################################
-#    input variables            #
-#################################
-DO_FILTER = TRUE # filter cell lines for selected ones?
-INPUT_DATA_DIR = "input_data/"
-patientUrls <-  read.csv(paste0(INPUT_DATA_DIR, "source_pat.csv")) # list of bookmark URLs from cBioPortal
-selGenes <- c("MYC", "BASP1", "PHB") # genes of interest
 
-#################################
-#################################
+# Global Variables --------------------------------------------------------
 
-# Study IDs of cell line studies in cBioPortal.
-# Should not change often, therefore hardcoded here.
+# Study IDs of cell line studies in cBioPortal. Should not change often.
 CELL_LINE_STUDIES = c("cellline_nci60",
                       "cellline_ccle_broad",
-                      "ccle_broad_2019"
-                      )
+                      "ccle_broad_2019")
 
-# Create a CBioPortal API client
-cbio <- cBioPortal()
-
+# Helper Functions ---------------------------------------------------------------
 
 #' getStudiesFromUrl
 #'
@@ -41,11 +30,14 @@ cbio <- cBioPortal()
 #' @return a vector of studyIds
 #' @export
 #'
-#' @examples
+#' @examples getStudiesFromUrl("https://www.cbioportal.org/results/download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0
+#' &Z_SCORE_THRESHOLD=2.0&cancer_study_list=all_stjude_2015%2Call_stjude_2016%2Clcll_broad_2013%2Ccll_broad_2015%2C
+#' all_phase2_target_2018_pub%2Cpcnsl_mayo_2015&case_set_id=all&data_priority=0&gene_list=MYC%2520BASP1%2520PHB&
+#' geneset_list=%20&profileFilter=0&tab_index=tab_visualize")
 getStudiesFromUrl <- function(url) {
 
   cancerStudyString <- httr::parse_url(url)$query$cancer_study_list
-  cancerStudiesAsVector <- cancerStudyString %>% strsplit(",")
+  cancerStudiesAsVector <- cancerStudyString %>% strsplit(",") %>% unlist()
   return(cancerStudiesAsVector)
 
 }
@@ -60,20 +52,13 @@ getStudiesFromUrl <- function(url) {
 #' @return A Entrez Id
 #'
 #' @examples
-#' translate("MYC")
-#' translate(4609)
-#' translate("4609")
-toEntrez <- function(gene) {
+#' toEntrez("MYC")
+#' toEntrez("MTOR")
+#' toEntrez(4609)
+#' toEntrez("4609")
+toEntrez <- function(gene, translatorTable = translatedGenes) {
 
-  # AnnotationDbi only handles strings
-  gene <- toString(gene)
-
-  if(!str_starts(gene, "[0-9]")) {
-    gene <- AnnotationDbi::select(org.Hs.eg.db, keys = gene, column = "ENTREZID", keytype = "SYMBOL")$ENTREZID
-  }
-
-  # convert back to int
-  return(strtoi(gene))
+  (translatorTable %>% filter(ENTREZID == gene | SYMBOL == gene))$ENTREZID
 }
 
 
@@ -87,34 +72,29 @@ toEntrez <- function(gene) {
 #' @return A HUGO symbol.
 #'
 #' @examples
-#' translate("MYC")
-#' translate(4609)
-#' translate("4609")
-toHugo <- function(gene) {
+#' toHugo("MYC")
+#' toHugo(4609)
+#' toHugo("4609")
+toHugo <- function(gene, translatorTable = translatedGenes) {
 
-  # AnnotationDbi only handles strings
-  gene <- toString(gene)
+  (translatorTable %>% filter(ENTREZID == gene | SYMBOL == gene))$SYMBOL
 
-  if(str_starts(gene, "[0-9]")) {
-    gene <- AnnotationDbi::select(org.Hs.eg.db, keys = gene, column = "SYMBOL", keytype = "ENTREZID")$SYMBOL
-  }
-
-  return(gene)
 }
 
 
-#' getMolecularData
+#' Get expression data from a single study.
 #'
 #' @description gets RNA expression profiles from cBioPortal for the given study and genes
 #'
-#' @param study a studyId string, e.g. "ccle_broad_2019"
-#' @param molecularProfile a molecularProfile stub to search for. Usually "rna_seq_v2_mrna" or similar
+#' @param study A studyId string, e.g. "ccle_broad_2019".
+#' @param genes A character vector of HUGO gene names.
+#' @param molecularProfile A molecularProfile stub to search for. Usually "rna_seq_v2_mrna" or similar
 #'
-#' @return
+#' @return A table of expression values as given by cBioPortalData.
 #' @export
 #'
-#' @examples
-getMolecularData <- function(study, molecularProfile) {
+#' @examples getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
+getMolecularData <- function(study, genes, molecularProfile) {
   # list all sampleIds from the study
   samples <- cBioPortalData::allSamples(cbio, studyId = study)
 
@@ -123,103 +103,125 @@ getMolecularData <- function(study, molecularProfile) {
     molecularProfiles(cbio, studyId = study, projection = "ID") %>%
     filter(str_detect(molecularProfileId, paste0(molecularProfile, "$")))
 
-  #return if no RNA expression profile exists
-  if (!isEmpty(rnaProfiles$molecularProfileId)) {
-    return(
-      molecularData(
-        api = cbio,
-        molecularProfileIds = rnaProfiles$molecularProfileId,
-        entrezGeneIds = unlist(lapply(selGenes, toEntrez)),
-        sampleIds = samples$sampleId
-      )
-    )
+  # return empty tibble if no expression profile was found
+  if (isEmpty(rnaProfiles$molecularProfileId)) {
+    return(tibble())
   }
-  else {
-    return(NULL)
-  }
+
+  return(
+    molecularData(
+      api = cbio,
+      molecularProfileIds = rnaProfiles$molecularProfileId,
+      entrezGeneIds = map_chr(genes, toEntrez),
+      sampleIds = samples$sampleId
+    )[[1]]
+  )
+
 }
 
 #' Make a table of RNA expression values.
 #'
 #' @param studyList List of studies
-#' @param selGenes List of genes
-#' @param molecularProfile The type of molecular profile to query. Default is "rna_seq_v2_mrna", for cell lines "rna_seq_mrna" has to be used.
+#' @param genes Character vector of genes to evaluate
+#' @param molecularProfile The type of molecular profile to query. For most
+#' patient cohorts it is "rna_seq_v2_mrna", for cell lines "rna_seq_mrna".
 #'
-#' @return Table of RNA expression values for selGenes, one row per sample.
+#' @return A tibble of RNA expression values, grouped by cancer origin,
+#' one row per sample.
+#' @export
+makeExpressionTable <- function(studyList, genes, molecularProfile) {
+
+  expressions.longtable <- purrr::reduce(map(studyList, getMolecularData,
+                                             genes = genes,
+                                             molecularProfile = molecularProfile),
+                                         rbind)
+
+  # remove NA and restructure output
+  expressions.widetable <- expressions.longtable %>%
+    dplyr::select(studyId, sampleId, entrezGeneId, value) %>%
+    pivot_wider(names_from = entrezGeneId, values_from = value) %>%
+    na.omit() %>%
+    rename_with(.fn = map_chr, .f = toHugo, .cols = matches("[0-9]+"))
+
+  return(expressions.widetable)
+}
+
+
+#' Make an expression table for multiple cancer types.
+#'
+#' @description A table of cancer types and their respecitve studies
+#' (as character vector or raw cbioPortal URL) is searched and output in a table
+#' grouped by cancer origin.
+#'
+#' @param inputTable A 2-column dataframe, colnames have to be "origin" and "studies".
+#' @param genes Character vector of genes to evaluate
+#' @param molecularProfile The type of molecular profile to query. For most
+#' patient cohorts it is "rna_seq_v2_mrna", for cell lines "rna_seq_mrna".
+#' @return A tibble of RNA expression values, grouped by cancer origin,
+#'one row per sample.
 #' @export
 #'
-#' @examples
-#' TODO
-makeExpressionTable <- function(studyList, selGenes, molecularProfile = "rna_seq_v2_mrna") {
+#' @examples combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
+combineMultipleCancerTypes <- function(inputTable, genes, molecularProfile) {
 
-  # get data from all selected studies
-  all.data <- accumulate(map(studyList, getMolecularData, molecularProfile = molecularProfile), rbind)
-  #   tibble()
-  # for (study in studyList) {
-  #   new.data <- getMolecularData(study, molecularProfile = molecularProfile)
-  #   all.data <- rbind(all.data, new.data[[1]])
-  # }
-  # # remove NA and restructure output
-  # wideOutput <- all.data %>%
-  #   mutate(all.data, hugoGeneSymbol = sapply(X = entrezGeneId, FUN = translate, translatorTable)) %>%
-  #   select(studyId, sampleId, hugoGeneSymbol, value) %>%
-  #   pivot_wider(names_from = hugoGeneSymbol, values_from = value)
-  # return(wideOutput)
+  # Helper function to process 1 line of input
+  annotateOrigins <- function(origin, studies, ...) {
+
+    # if a URL is supplied, convert it to a list of studies
+    if(class(studies) == "character") {
+     studies <- getStudiesFromUrl(studies)
+    }
+    expressionTable <- makeExpressionTable(studies, genes, molecularProfile) %>%
+      mutate(origin = origin)
+    return(expressionTable)
+  }
+
+  all.patient.expressions <- purrr::reduce(pmap(inputTable, .f = annotateOrigins), rbind) %>%
+    group_by(origin) %>%
+    mutate(n = n())
+  return(all.patient.expressions)
+}
+
+filterByOrigin <- function(expressionData, filterList, column = origin) {
+  filterString <- paste(filterList, collapse = "|")
+
+  filter(expressionData, grepl(filterString, {{column}}, ignore.case = T))
 }
 
 
+# Main function ------------------------------------------------------
 
-allPatientData <- data.frame()
 
-#annotate patient data w/ origin and combine
-lapply(patientUrls["url"], fetchPat, selGenes = selGenes)
-for (row in 1:nrow(patientUrls)) {
-  dataframe <- fetchPat(patientUrls[row, "url"], selGenes)
-  dataframe["Origin"] = patientUrls[row, "Type"] #add row with patient cancer origin
-  allPatientData <-
-    rbind(allPatientData, dataframe)
-}
-for (origin in unique(allPatientData$Origin)) {
-  numOfOccurances = sum(allPatientData$Origin == origin)
-  allPatientData$Origin <-
-    gsub(
-      paste0("\\b", origin, "\\b"),
-      paste0(origin, " (n = ", numOfOccurances, ")"),
-      allPatientData$Origin
-    )
-}
-allPatientData <- allPatientData %>% filter(BASP1 != 0)
+#' Title
+#'
+#' @param gene1 "Numerator" gene.
+#' @param gene2 "Denominator" gene.
+#'
+#' @return Writes tibbles "filteredPatientData", "filteredCellData", and "selectedCellData"
+#' to a global variable.
+#' @export
+#'
+#' @examples fetchCbioData("MYC", "BASP1")
+fetchCbioData <- function(gene1, gene2) {
 
-#annotate cell data w/ origin and merge to patient dataframe
-cellLines <- fetchCells(cellLineUrl[1, "url"], selGenes)
-cellLines[which(cellLines$MYC != "NA" &
-                  cellLines$MYC != 0 &
-                  cellLines$BASP1 != "NA" & cellLines$BASP1 != 0),]
-Origin <- gsub("^.*?_", "", cellLines$sampleId)
-cellLines <- cbind(cellLines, Origin)
-for (origin in unique(cellLines$Origin)) {
-  numOfOccurances = sum(cellLines$Origin == origin)
-  cellLines$Origin <-
-    gsub(
-      paste0("\\b", origin, "\\b"),
-      paste0(origin, " (n = ", numOfOccurances, ")"),
-      cellLines$Origin
-    )
-}
+  allPatientData <- combineMultipleCancerTypes(patientUrls, selGenes, "rna_seq_v2_mrna")
+  allCellData <- makeExpressionTable(CELL_LINE_STUDIES, selGenes, "rna_seq_mrna") %>%
+    mutate(origin = gsub("^.*?_", "", sampleId)) %>%
+    group_by(origin) %>%
+    mutate(n = n())
 
-#subset to interesting cancer types, and rename them
-allPatientData <- allPatientData %>%
-  filter(grepl("Bowel|Myeloma|Lymphoma|Cervix|Breast|Glioma|Melanoma", Origin, ignore.case = T))
-cellLines <- cellLines %>%
-  filter(grepl("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE|LARGE_INTESTINE|CERVIX|BREAST|SKIN|CENTRAL_NERVOUS_SYSTEM", Origin, ignore.case = T)) %>%
-  mutate(Origin = gsub("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE", "HAEMATOPOIETIC/LYMPHOID_TISSUE", Origin)) %>%
-  mutate(Origin = gsub("_", " ", str_to_sentence(Origin)))
+  filteredPatientData <<- filterByOrigin(allPatientData, patientFilter)
 
-#get subset of selected cell lines
-if(DO_FILTER) {
-  selectedCellLines <- cellLines %>%
-    filter(grepl("K562|MOLT4|SW480|MCF7|LN18|HEK293T|HL60|HeLa|HT29|CACO2|A375|MDAMB231|SUM159|HCC159", sampleId, ignore.case = T))%>%
-    mutate(Name = gsub("_.*", "", sampleId, ignore.case = T))
+  filteredCellData <<- filterByOrigin(allCellData, cellFilter) %>%
+    # remove some ugliness from the cell names
+    mutate(origin = gsub("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE", "HAEMATOPOIETIC/LYMPHOID_TISSUE", origin)) %>%
+    mutate(origin = gsub("_", " ", str_to_sentence(origin)))
+
+  selectedCellData <<- filterByOrigin(filteredCellData, selectedCellFilter, sampleId) %>%
+    mutate(Name = gsub("_.*", "", sampleId, ignore.case = T)) %>%
+    ungroup()
+
+  # List of studies used to generate data
+  listOfStudies <<- allPatientData$studyId %>% unique()
 
 }
-
