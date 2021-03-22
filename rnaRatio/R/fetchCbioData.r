@@ -121,7 +121,7 @@ toHugo <- function(gene, translatorTable = translatedGenes) {
 #' @return A table of expression values as given by cBioPortalData.
 #' @export
 #'
-#' @examples getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
+#' @examples moldata <- getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
 getMolecularData <- function(study, genes, molecularProfile) {
   # list all sampleIds from the study
   samples <- cBioPortalData::allSamples(cbio, studyId = study)
@@ -189,7 +189,7 @@ makeExpressionTable <- function(studyList, genes, molecularProfile) {
 #'one row per sample.
 #' @export
 #'
-#' @examples combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
+#' @examples allPatientData <- combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
 combineMultipleCancerTypes <- function(inputTable, genes, molecularProfile) {
 
   # Helper function to process 1 line of input
@@ -226,8 +226,8 @@ filterByOrigin <- function(expressionData, filterList, column = origin) {
 #' @param gene2 "Denominator" gene.
 #' @param ... more optional genes
 #'
-#' @return Writes tibbles "filteredPatientData", "filteredCellData", and "selectedCellData"
-#' to a global variable.
+#' @return Writes tibbles "filteredPatientData", "filteredCellData", and
+#' "selectedCellData" to a global variable.
 #' @export
 #'
 #' @examples fetchCbioData("MYC", "BASP1")

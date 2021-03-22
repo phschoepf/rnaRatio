@@ -1,4 +1,4 @@
-Package: rnaRatioR
+Package: rnaRatio
 Type: Package
 Title: Calculate and plot ratios of RNA expression from cBioPortal
 Version: 0.1.0
