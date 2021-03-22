@@ -11,17 +11,40 @@ library(ggrepel)
 
 # Helper functions -------------------------------------------------------------
 
-plotPatients <- function(.data, gene1, gene2 = NULL, ...) {
+
+#' Calculate upper YLim for an absolute expression boxplot.
+#'
+#' @description It is advisable to cut off extreme outliers from RNA expression
+#' data so the Y-Limit stays within reasonable levels to show the interesting
+#' data. This function sets the Y-Limit to the whisker height of the highest group,
+#' plus the padding value (0.2 = 20% more than highest col).
+#'
+#' @param .data A grouped tibble
+#' @param plotBy The column that will be plotted. Must be an expresison of form
+#' expr(!!sym(gene)).
+#' @param padding Amount of padding to be applied. Default = 0.2
+#'
+#' @return An integer vector of form c(0, upper_ylim).
+#'
+#' @examples calcYlim(filteredCellData, plotBy = expr(!!sym("MYC")))
+#' calcYlim(filtredPatientData, plotBy = expr(!!sym("BASP1")), 0.5)
+calcYlim <- function(.data, plotBy, padding = 0.2) {
+
+  boxplotStats <- .data %>%
+    summarize(boxplot = list(set_names(boxplot.stats(!!plotBy)$stats, list("lower_whisk", "q1", "median", "q3", "upper_whisk")))) %>%
+    unnest_wider(col = boxplot)
+  ylim <- c(0, max(boxplotStats["upper_whisk"]) * (1 + padding))
+  return(ylim)
+}
+
+
+plotPatients <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
   if(is.null(gene2)) {
     # only 1 gene, plot absolutes
     plotTitle <- paste0(gene1, " RNA expression")
     axisTitle <- "RNA expression, RNAseq v2 RSEM"
     plotBy <- expr(!!sym(gene1))
-
-    #outlier removal
-    valuesOnly<- .data[[gene1]]
-    boxplotStats <- boxplot.stats(valuesOnly)$stats
-    ylim <- c(0, boxplotStats[4]+(boxplotStats[4]-boxplotStats[2])*2)
+    ylim <- calcYlim(.data, plotBy)
 
   }
   else {
@@ -29,7 +52,6 @@ plotPatients <- function(.data, gene1, gene2 = NULL, ...) {
     plotTitle <- paste0(gene1, " / ", gene2, " RNA expression ratio")
     axisTitle <- expression(paste(log[10], " RNA expression ratio, RNAseq v2 RSEM"))
     plotBy <- expr(log10(!!sym(gene1) / !!sym(gene2)))
-    ylim <- NULL # let R do the y-limit for ratio plots
   }
 
   patplot <-
@@ -60,17 +82,13 @@ plotPatients <- function(.data, gene1, gene2 = NULL, ...) {
 
 }
 
-plotCells <- function(.data, gene1, gene2 = NULL, ...) {
+plotCells <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
   if(is.null(gene2)) {
     # only 1 gene, plot absolutes
     plotTitle <- paste0(gene1, " RNA expression")
     axisTitle <- "RNA expression, RNAseq RPKM"
     plotBy <- expr(!!sym(gene1))
-
-    #outlier removal
-    valuesOnly<- .data[[gene1]]
-    boxplotStats <- boxplot.stats(valuesOnly)$stats
-    ylim <- c(0, boxplotStats[4]+(boxplotStats[4]-boxplotStats[2])*2)
+    ylim <- calcYlim(.data, plotBy)
 
   }
   else {
@@ -78,7 +96,6 @@ plotCells <- function(.data, gene1, gene2 = NULL, ...) {
     plotTitle <- paste0(gene1, " / ", gene2, " RNA expression ratio")
     axisTitle <- expression(paste(log[10], " RNA expression ratio, RNAseq RPKM"))
     plotBy <- expr(log10(!!sym(gene1) / !!sym(gene2)))
-    ylim <- NULL # let R do the y-limit for ratio plots
   }
 
   cellplot <-

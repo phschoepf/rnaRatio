@@ -44,7 +44,7 @@ selectedCellFilter <- c("K562", "MOLT4", "SW480", "MCF7", "LN18", "HEK293T", "HL
 #' @examples rnaRatioR("MYC", "BASP1", patientUrls, patientFilter, cellFilter, selectedCellFilter)
 #' @export
 #'
-rnaRatioR <- function(gene1, gene2, patientInput, patientFilter = "", cellFilter = "", selectedCellFilter = "", forceReload = TRUE){
+rnaRatioR <- function(gene1, gene2, patientInput, patientFilter = "", cellFilter = "", selectedCellFilter = "", forceReload = FALSE){
 
   source("R/fetchCbioData.r")
   source("R/makePlots.r")
