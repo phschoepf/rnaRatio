@@ -42,6 +42,34 @@ getStudiesFromUrl <- function(url) {
 
 }
 
+#' Make a translation table between HUGO and EntrezID.
+#'
+#' @description The cBioPortal API internally uses Entrez IDs, which are not
+#' very human-readable. Therefore this function take a given list of HUGO
+#' gene symbols and turns it into a lookup table to use in other functions.
+#'
+#' @param genelist A numerical or character vector of genes. Accepted are HUGO
+#' and EntrezId.
+#'
+#' @return A dataframe whith HUGO and EntrezId for each gene
+#'
+translateGenes <- function (genelist) {
+  #if all genes are numerical, i.e. Entrez, convert to Hugo
+  if(all(str_detect(genelist, "[0-9]+"))) {
+    return(AnnotationDbi::select(org.Hs.eg.db,
+                                 keys = genelist,
+                                 column = "SYMBOL",
+                                 keytype = "ENTREZID"))
+  }
+  else if(all(str_detect(genelist, "[a-zA-Z]+"))) {
+    return(AnnotationDbi::select(org.Hs.eg.db,
+                                 keys = genelist,
+                                 column = "ENTREZID",
+                                 keytype = "SYMBOL"))
+  }
+}
+
+
 #' toEntrez
 #'
 #' @description Converts a HUGO gene symbol to Entrez using org.Hs.eg.db.
@@ -168,7 +196,7 @@ combineMultipleCancerTypes <- function(inputTable, genes, molecularProfile) {
   annotateOrigins <- function(origin, studies, ...) {
 
     # if a URL is supplied, convert it to a list of studies
-    if(class(studies) == "character") {
+    if(str_starts(studies, "http")) {
      studies <- getStudiesFromUrl(studies)
     }
     expressionTable <- makeExpressionTable(studies, genes, molecularProfile) %>%
@@ -192,17 +220,25 @@ filterByOrigin <- function(expressionData, filterList, column = origin) {
 # Main function ------------------------------------------------------
 
 
-#' Title
+#' Generate expression table for a set of genes
 #'
 #' @param gene1 "Numerator" gene.
 #' @param gene2 "Denominator" gene.
+#' @param ... more optional genes
 #'
 #' @return Writes tibbles "filteredPatientData", "filteredCellData", and "selectedCellData"
 #' to a global variable.
 #' @export
 #'
 #' @examples fetchCbioData("MYC", "BASP1")
-fetchCbioData <- function(gene1, gene2) {
+fetchCbioData <- function(gene1, gene2, ...) {
+
+  # Create a CBioPortal API client
+  cbio <<- cBioPortal()
+
+  # set up gene table
+  selGenes <<- c(gene1, gene2, ...)
+  translatedGenes <<- translateGenes(selGenes)
 
   allPatientData <- combineMultipleCancerTypes(patientUrls, selGenes, "rna_seq_v2_mrna")
   allCellData <- makeExpressionTable(CELL_LINE_STUDIES, selGenes, "rna_seq_mrna") %>%

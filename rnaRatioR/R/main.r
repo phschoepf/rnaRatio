@@ -1,13 +1,11 @@
 # Main script to call all other functions.
 # Author: Philemon Schoepf <philemon.schoepf@student.ubik.ac.at>
-# Date: 2021-03-19
-
-library(cBioPortalData)
+# Date: 2021-03-22
 
 # Global Variables -----------------------------------------------------------
 
 INPUT_PATH = "../input_data/"
-OUTPUT_PATH = "images/"
+OUTPUT_PATH = "../images/"
 OUTPUT_FORMAT = "png"
 
 #image dims in mm (300 dpi)
@@ -16,7 +14,7 @@ HEIGHT = 56
 
 DO_WRITE <- F # if T, write output to file, otherwise show it on GUI
 
-# Input Variables ---------------------------------------------------------
+# Input Variables (for testing) ---------------------------------------------------------
 
 patientUrls <-  read.csv(paste0(INPUT_PATH, "source_pat.csv")) # list of bookmark URLs from cBioPortal
 patientFilter <- c("Bowel","Myeloma", "Lymphoma", "Cervix", "Breast", "Glioma", "Melanoma")
@@ -27,33 +25,6 @@ selectedCellFilter <- c("K562", "MOLT4", "SW480", "MCF7", "LN18", "HEK293T", "HL
 
 
 # Run ---------------------------------------------------------------------
-
-#' Make a translation table between HUGO and EntrezID.
-#'
-#' @description The cBioPortal API internally uses Entrez IDs, which are not
-#' very human-readable. Therefore this function take a given list of HUGO
-#' gene symbols and turns it into a lookup table to use in other functions.
-#'
-#' @param genelist A numerical or character vector of genes. Accepted are HUGO
-#' and EntrezId.
-#'
-#' @return A dataframe whith HUGO and EntrezId for each gene
-#'
-translateGenes <- function (genelist) {
-  #if all genes are numerical, i.e. Entrez, convert to Hugo
-  if(all(str_detect(genelist, "[0-9]+"))) {
-    return(AnnotationDbi::select(org.Hs.eg.db,
-                                 keys = genelist,
-                                 column = "SYMBOL",
-                                 keytype = "ENTREZID"))
-  }
-  else if(all(str_detect(genelist, "[a-zA-Z]+"))) {
-    return(AnnotationDbi::select(org.Hs.eg.db,
-                                 keys = genelist,
-                                 column = "ENTREZID",
-                                 keytype = "SYMBOL"))
-  }
-}
 
 #' RNARatioR
 #'
@@ -73,13 +44,7 @@ translateGenes <- function (genelist) {
 #' @examples rnaRatioR("MYC", "BASP1", patientUrls, patientFilter, cellFilter, selectedCellFilter)
 #' @export
 #'
-rnaRatioR <- function(gene1, gene2, patientInput, patientFilter = "", cellFilter = "", selectedCellFilter = "", forceReload = FALSE){
-
-  # Create a CBioPortal API client
-  cbio <- cBioPortal()
-
-  translatedGenes <<- translateGenes(selGenes)
-  selGenes <<- c(gene1, gene2)
+rnaRatioR <- function(gene1, gene2, patientInput, patientFilter = "", cellFilter = "", selectedCellFilter = "", forceReload = TRUE){
 
   source("R/fetchCbioData.r")
   source("R/makePlots.r")
@@ -89,3 +54,4 @@ rnaRatioR <- function(gene1, gene2, patientInput, patientFilter = "", cellFilter
   }
   plotRatio(gene1, gene2)
 }
+

@@ -136,6 +136,7 @@ plotCellsTable <- function(.data, gene1, gene2) {
 
 plotRatio <- function(gene1, gene2) {
 
+  #generate the plots
   ratioCell <- plotCells(filteredCellData, gene1, gene2, ylim =  c(-2,4))
   ratioPat <- plotPatients(filteredPatientData, gene1, gene2, ylim = c(-2,4))
 
@@ -152,6 +153,7 @@ plotRatio <- function(gene1, gene2) {
                               align = "h", axis = "tb")
   combinedPlot <- ggarrange(plotlist = alignedPlots, nrow = 3, ncol = 2)
 
+  #make table of selected cell values
   cellsTable <- plotCellsTable(selectedCellData, gene1, gene2)
 
   #write to disk
@@ -169,7 +171,7 @@ plotRatio <- function(gene1, gene2) {
 
     ggsave(paste0(OUTPUT_PATH, gene2, "_cellValueTable.", OUTPUT_FORMAT), plot = cellsTable, width = 130, height = 40, units = "mm")
   }
-  # or output directly to a viewport
+  # or output to a viewport
   else {
     for (plot in alignedPlots) {
       plot(plot)
