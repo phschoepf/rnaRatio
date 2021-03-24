@@ -2,21 +2,23 @@
 % Please edit documentation in R/fetchCbioData.r
 \name{fetchCbioData}
 \alias{fetchCbioData}
-\title{Title}
+\title{Generate expression table for a set of genes}
 \usage{
-fetchCbioData(gene1, gene2)
+fetchCbioData(gene1, gene2, ...)
 }
 \arguments{
 \item{gene1}{"Numerator" gene.}
 
 \item{gene2}{"Denominator" gene.}
+
+\item{...}{more optional genes}
 }
 \value{
-Writes tibbles "filteredPatientData", "filteredCellData", and "selectedCellData"
-to a global variable.
+Writes tibbles "filteredPatientData", "filteredCellData", and
+"selectedCellData" to a global variable.
 }
 \description{
-Title
+Generate expression table for a set of genes
 }
 \examples{
 fetchCbioData("MYC", "BASP1")

@@ -70,7 +70,7 @@ plotPatients <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
 
   patplot <-
     ggplot(.data, aes(
-      x = reorder(origin, -(!!plotBy), FUN = median),
+      x = reorder(originWithN, -(!!plotBy), FUN = median),
       y = !!plotBy,
       na.rm = TRUE
     )) +
@@ -117,7 +117,7 @@ plotCells <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
 
   cellplot <-
     ggplot(.data, aes(
-      x = reorder(origin, -(!!plotBy), FUN = median),
+      x = reorder(originWithN, -(!!plotBy), FUN = median),
       y = !!plotBy,
       na.rm = TRUE
     )) +

@@ -20,5 +20,5 @@ A table of expression values as given by cBioPortalData.
 gets RNA expression profiles from cBioPortal for the given study and genes
 }
 \examples{
-getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
+moldata <- getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
 }

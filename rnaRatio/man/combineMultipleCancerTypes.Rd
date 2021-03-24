@@ -24,5 +24,5 @@ A table of cancer types and their respecitve studies
 grouped by cancer origin.
 }
 \examples{
-combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
+allPatientData <- combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
 }

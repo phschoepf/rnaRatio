@@ -1,7 +1,10 @@
+#Ignore R workspace
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+*.Rcheck
+
 #Ignore thumbnails created by Windows
 Thumbs.db
 #Ignore files built by Visual Studio
@@ -31,5 +34,9 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 .vs/
+
 #Nuget packages folder
 packages/
+
+#rnaRatio package
+/rnaRatio_*.tar.gz

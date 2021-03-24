@@ -206,7 +206,7 @@ combineMultipleCancerTypes <- function(inputTable, genes, molecularProfile) {
 
   all.patient.expressions <- purrr::reduce(pmap(inputTable, .f = annotateOrigins), rbind) %>%
     group_by(origin) %>%
-    mutate(n = n())
+    mutate(n = n(), originWithN = paste0(origin, " (n = ", n, ")"))
   return(all.patient.expressions)
 }
 
@@ -243,15 +243,16 @@ fetchCbioData <- function(gene1, gene2, ...) {
   allPatientData <- combineMultipleCancerTypes(patientUrls, selGenes, "rna_seq_v2_mrna")
   allCellData <- makeExpressionTable(CELL_LINE_STUDIES, selGenes, "rna_seq_mrna") %>%
     mutate(origin = gsub("^.*?_", "", sampleId)) %>%
-    group_by(origin) %>%
-    mutate(n = n())
+    group_by(origin)
 
   filteredPatientData <<- filterByOrigin(allPatientData, patientFilter)
 
   filteredCellData <<- filterByOrigin(allCellData, cellFilter) %>%
     # remove some ugliness from the cell names
     mutate(origin = gsub("HAEMATOPOIETIC_AND_LYMPHOID_TISSUE", "HAEMATOPOIETIC/LYMPHOID_TISSUE", origin)) %>%
-    mutate(origin = gsub("_", " ", str_to_sentence(origin)))
+    mutate(origin = gsub("_", " ", str_to_sentence(origin)),
+           n = n(),
+           originWithN = paste0(origin, " (n = ", n, ")"))
 
   selectedCellData <<- filterByOrigin(filteredCellData, selectedCellFilter, sampleId) %>%
     mutate(Name = gsub("_.*", "", sampleId, ignore.case = T)) %>%
