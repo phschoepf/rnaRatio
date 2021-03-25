@@ -38,5 +38,3 @@ _ReSharper*/
 #Nuget packages folder
 packages/
 
-#rnaRatio package
-/rnaRatio_*.tar.gz
