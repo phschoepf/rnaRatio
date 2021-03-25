@@ -2,7 +2,7 @@
 % Please edit documentation in R/fetchCbioData.r
 \name{fetchCbioData}
 \alias{fetchCbioData}
-\title{Generate expression table for a set of genes}
+\title{Generate expression table for a set of genes.}
 \usage{
 fetchCbioData(gene1, gene2, ...)
 }
@@ -18,9 +18,11 @@ Writes tibbles "filteredPatientData", "filteredCellData", and
 "selectedCellData" to a global variable.
 }
 \description{
-Generate expression table for a set of genes
+Generate expression table for a set of genes.
 }
 \examples{
+\dontrun{
 fetchCbioData("MYC", "BASP1")
+}
 
 }

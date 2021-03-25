@@ -20,6 +20,8 @@ Tibble of filtered expression data
 Filter cBioPortal data by cancer origin.
 }
 \examples{
+\dontrun{
 filterByOrigin(allPatientData, c("Bowel", "Breast", "Melanoma"))
+}
 
 }

@@ -21,6 +21,8 @@ A ggplot2 object.
 Plot table of expression values and ratios for selected cell lines.
 }
 \examples{
+\dontrun{
 cellTable <- plotCellsTable (selectedCellData, "MYC", "PHB")
+}
 
 }

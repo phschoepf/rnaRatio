@@ -18,3 +18,9 @@ The cBioPortal API internally uses Entrez IDs, which are not
 very human-readable. Therefore this function take a given list of HUGO
 gene symbols and turns it into a lookup table to use in other functions.
 }
+\examples{
+\dontrun{
+tranlatedGenes <- translateGenes(C("MYC", "BASP1", "MTOR", "RPTOR"))
+}
+
+}

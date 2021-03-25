@@ -2,7 +2,7 @@
 % Please edit documentation in R/fetchCbioData.r
 \name{toEntrez}
 \alias{toEntrez}
-\title{toEntrez}
+\title{Convert a HUGO symbol to Entrez ID.}
 \usage{
 toEntrez(gene, translatorTable = translatedGenes)
 }
@@ -19,9 +19,11 @@ Converts a HUGO gene symbol to Entrez using org.Hs.eg.db.
 Returns identity if it is already a Entrez symbol.
 }
 \examples{
+\dontrun{
+translatedGenes <- translateGenes(c("MYC", "MTOR")
 toEntrez("MYC")
 toEntrez("MTOR")
 toEntrez(4609)
 toEntrez("4609")
-
+}
 }

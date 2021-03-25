@@ -28,8 +28,10 @@ Plot patient data.
 Plot cell line data.
 }
 \examples{
+\dontrun{
 patPlot <- plotPatients(filteredPatientData, "MYC", "BASP1")
 patPlot1 <- plotPatients(filteredPatientData, "MTOR")
 patPlot2 <- plotPatients(filteredPatientData, "RPTOR", ylim = c(0,20000))
+}
 
 }

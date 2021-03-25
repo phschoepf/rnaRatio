@@ -24,7 +24,7 @@ CELL_LINE_STUDIES = c("cellline_nci60",
 
 # Helper Functions --------------------------------------------------------
 
-#' getStudiesFromUrl
+#' Convert a cBioPortal query URL into a list of studies.
 #'
 #' @description Extracts the studyIds from a cBioPortal URL. This enables use of the web GUI for study selection by exporting the URLs.
 #' This is intended to be used with patient data only, for the cell lines the study IDs are provided as constants.
@@ -33,12 +33,14 @@ CELL_LINE_STUDIES = c("cellline_nci60",
 #'
 #' @return a vector of studyIds
 #'
-#' @examples studyList <- getStudiesFromUrl("https://www.cbioportal.org/results/
+#' @examples \dontrun{
+#' studyList <- getStudiesFromUrl("https://www.cbioportal.org/results/
 #' download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=
 #' all_stjude_2015%2Call_stjude_2016%2Clcll_broad_2013%2Ccll_broad_2015%2C
 #' all_phase2_target_2018_pub%2Cpcnsl_mayo_2015&case_set_id=all&
 #' data_priority=0&gene_list=MYC%2520BASP1%2520PHB&
 #' geneset_list=%20&profileFilter=0&tab_index=tab_visualize")
+#' }
 #'
 getStudiesFromUrl <- function(url) {
 
@@ -59,6 +61,10 @@ getStudiesFromUrl <- function(url) {
 #'
 #' @return A dataframe whith HUGO and EntrezId for each gene
 #'
+#' @examples \dontrun{
+#' tranlatedGenes <- translateGenes(C("MYC", "BASP1", "MTOR", "RPTOR"))
+#' }
+#'
 translateGenes <- function (genelist) {
   #if all genes are numerical, i.e. Entrez, convert to Hugo
   if(all(str_detect(genelist, "[0-9]+"))) {
@@ -76,7 +82,7 @@ translateGenes <- function (genelist) {
 }
 
 
-#' toEntrez
+#' Convert a HUGO symbol to Entrez ID.
 #'
 #' @description Converts a HUGO gene symbol to Entrez using org.Hs.eg.db.
 #' Returns identity if it is already a Entrez symbol.
@@ -86,19 +92,20 @@ translateGenes <- function (genelist) {
 #'
 #' @return A Entrez Id
 #'
-#' @examples
+#' @examples \dontrun{
+#' translatedGenes <- translateGenes(c("MYC", "MTOR")
 #' toEntrez("MYC")
 #' toEntrez("MTOR")
 #' toEntrez(4609)
 #' toEntrez("4609")
-#'
+#' }
 toEntrez <- function(gene, translatorTable = translatedGenes) {
 
   (translatorTable %>% filter(ENTREZID == gene | SYMBOL == gene))$ENTREZID
 }
 
 
-#' toHugo
+#' Convert a Entrez ID to HUGO.
 #'
 #' @description Converts a Entrez Id to HUGO using org.Hs.eg.db.
 #' Returns identity if it is already a HUGO symbol.
@@ -108,11 +115,12 @@ toEntrez <- function(gene, translatorTable = translatedGenes) {
 #'
 #' @return A HUGO symbol
 #'
-#' @examples
+#' @examples \dontrun{
+#' translatedGenes <- translateGenes(c("MYC", "MTOR"))
 #' toHugo("MYC")
 #' toHugo(4609)
 #' toHugo("4609")
-#'
+#' }
 toHugo <- function(gene, translatorTable = translatedGenes) {
 
   (translatorTable %>% filter(ENTREZID == gene | SYMBOL == gene))$SYMBOL
@@ -130,7 +138,9 @@ toHugo <- function(gene, translatorTable = translatedGenes) {
 #'
 #' @return A table of expression values as given by cBioPortalData
 #'
-#' @examples moldata <- getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
+#' @examples \dontrun{
+#' moldata <- getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
+#' }
 #'
 #' @export
 getMolecularData <- function(study, genes, molecularProfile) {
@@ -201,7 +211,9 @@ makeExpressionTable <- function(studyList, genes, molecularProfile) {
 #' @return A tibble of RNA expression values, grouped by cancer origin,
 #'one row per sample.
 #'
-#' @examples allPatientData <- combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
+#' @examples \dontrun{
+#' allPatientData <- combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
+#' }
 #'
 #' @export
 combineMultipleCancerTypes <- function(inputTable, genes, molecularProfile) {
@@ -232,7 +244,9 @@ combineMultipleCancerTypes <- function(inputTable, genes, molecularProfile) {
 #'
 #' @return Tibble of filtered expression data
 #'
-#' @examples filterByOrigin(allPatientData, c("Bowel", "Breast", "Melanoma"))
+#' @examples \dontrun{
+#' filterByOrigin(allPatientData, c("Bowel", "Breast", "Melanoma"))
+#' }
 #'
 filterByOrigin <- function(expressionData, filterList, column = origin) {
   filterString <- paste(filterList, collapse = "|")
@@ -244,7 +258,7 @@ filterByOrigin <- function(expressionData, filterList, column = origin) {
 # Main function ------------------------------------------------------
 
 
-#' Generate expression table for a set of genes
+#' Generate expression table for a set of genes.
 #'
 #' @param gene1 "Numerator" gene.
 #' @param gene2 "Denominator" gene.
@@ -253,7 +267,9 @@ filterByOrigin <- function(expressionData, filterList, column = origin) {
 #' @return Writes tibbles "filteredPatientData", "filteredCellData", and
 #' "selectedCellData" to a global variable.
 #'
-#' @examples fetchCbioData("MYC", "BASP1")
+#' @examples \dontrun{
+#' fetchCbioData("MYC", "BASP1")
+#' }
 #'
 #' @export
 fetchCbioData <- function(gene1, gene2, ...) {

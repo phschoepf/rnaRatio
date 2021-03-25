@@ -29,13 +29,15 @@ HEIGHT = 56
 #'
 #' @return Either outputs images or plot to the GUI.
 #'
-#' @examples rnaRatio("MYC", "BASP1", patientUrls, patientFilter, cellFilter, selectedCellFilter)
+#' @examples \dontrun{
+#' rnaRatio("MYC", "BASP1", patientUrls, patientFilter, cellFilter, selectedCellFilter)
+#' }
 #'
 #' @export
 rnaRatio <- function(gene1, gene2, patientInput, patientFilter = "", cellFilter = "", selectedCellFilter = "", forceReload = FALSE){
 
   if(!exists("filteredPatientData") | !exists("filteredCellData") | forceReload == T) {
-    fetchCbioData(gene1, gene2, ...)
+    fetchCbioData(gene1, gene2)
   }
   plotRatio(gene1, gene2)
 }

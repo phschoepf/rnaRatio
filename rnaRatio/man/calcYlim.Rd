@@ -12,7 +12,8 @@ calcYlim(.data, plotBy, padding = 0.2)
 \item{plotBy}{The column that will be plotted. Must be an expresison of form
 expr(!!sym(gene)).}
 
-\item{padding}{Amount of padding to be applied. Default = 0.2}
+\item{padding}{Amount of padding to be applied. Default = 0.2, i.e. y-axis
+stretches 20\% beyond the highest whisker.}
 }
 \value{
 An integer vector of form c(0, upper_ylim).
@@ -24,6 +25,9 @@ data. This function sets the Y-Limit to the whisker height of the highest group,
 plus the padding value (0.2 = 20% more than highest col).
 }
 \examples{
+\dontrun{
 ylim <- calcYlim(filteredCellData, plotBy = expr(!!sym("MYC")))
 ylim <- calcYlim(filtredPatientData, plotBy = expr(!!sym("BASP1")), 0.5)
+}
+
 }

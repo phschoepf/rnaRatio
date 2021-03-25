@@ -2,7 +2,7 @@
 % Please edit documentation in R/fetchCbioData.r
 \name{getStudiesFromUrl}
 \alias{getStudiesFromUrl}
-\title{getStudiesFromUrl}
+\title{Convert a cBioPortal query URL into a list of studies.}
 \usage{
 getStudiesFromUrl(url)
 }
@@ -17,11 +17,13 @@ Extracts the studyIds from a cBioPortal URL. This enables use of the web GUI for
 This is intended to be used with patient data only, for the cell lines the study IDs are provided as constants.
 }
 \examples{
+\dontrun{
 studyList <- getStudiesFromUrl("https://www.cbioportal.org/results/
 download?Action=Submit&RPPA_SCORE_THRESHOLD=2.0&Z_SCORE_THRESHOLD=2.0&cancer_study_list=
 all_stjude_2015\%2Call_stjude_2016\%2Clcll_broad_2013\%2Ccll_broad_2015\%2C
 all_phase2_target_2018_pub\%2Cpcnsl_mayo_2015&case_set_id=all&
 data_priority=0&gene_list=MYC\%2520BASP1\%2520PHB&
 geneset_list=\%20&profileFilter=0&tab_index=tab_visualize")
+}
 
 }

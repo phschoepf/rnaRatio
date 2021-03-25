@@ -4,7 +4,7 @@ Title: Calculate and plot RNA expression ratios using cBioPortal
 Version: 0.1
 Author: Philemon Schoepf <philemon.schoepf@student.uibk.ac.at>
 Maintainer: Philemon Schoepf <philemon.schoepf@student.uibk.ac.at>
-Imports: AnnotationDbi, cBioPortalData, cowplot, dplyr, ggplot2, ggpubr, ggrepel, httr, org.Hs.eg.db, purrr, stringr, tidyr
+Imports: AnnotationDbi, cBioPortalData, cowplot, dplyr, ggplot2, ggpubr, ggrepel, httr, org.Hs.eg.db, purrr, rlang, S4Vectors, stringr, tibble, tidyr
 Description: Fetch cell line and patient mRNA expression data form cBioPortal and visualize data in box-and-scatter-plots.
     Can be used to compared patient to cell line data, annotate specific cell lines, and graph absolute expression data of one gene.
 License: file LICENSE

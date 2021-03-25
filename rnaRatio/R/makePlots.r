@@ -26,12 +26,16 @@ NULL
 #' @param .data A grouped tibble
 #' @param plotBy The column that will be plotted. Must be an expresison of form
 #' expr(!!sym(gene)).
-#' @param padding Amount of padding to be applied. Default = 0.2
+#' @param padding Amount of padding to be applied. Default = 0.2, i.e. y-axis
+#' stretches 20\% beyond the highest whisker.
 #'
 #' @return An integer vector of form c(0, upper_ylim).
 #'
-#' @examples ylim <- calcYlim(filteredCellData, plotBy = expr(!!sym("MYC")))
+#' @examples \dontrun{
+#' ylim <- calcYlim(filteredCellData, plotBy = expr(!!sym("MYC")))
 #' ylim <- calcYlim(filtredPatientData, plotBy = expr(!!sym("BASP1")), 0.5)
+#' }
+#'
 calcYlim <- function(.data, plotBy, padding = 0.2) {
 
   boxplotStats <- .data %>%
@@ -52,9 +56,11 @@ calcYlim <- function(.data, plotBy, padding = 0.2) {
 #'
 #' @return A ggplot2 plot.
 #'
-#' @examples patPlot <- plotPatients(filteredPatientData, "MYC", "BASP1")
+#' @examples \dontrun{
+#' patPlot <- plotPatients(filteredPatientData, "MYC", "BASP1")
 #' patPlot1 <- plotPatients(filteredPatientData, "MTOR")
 #' patPlot2 <- plotPatients(filteredPatientData, "RPTOR", ylim = c(0,20000))
+#' }
 #'
 #' @export
 plotPatients <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
@@ -104,6 +110,7 @@ plotPatients <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
 #' Plot cell line data.
 #'
 #' @rdname plotPatients
+#' @export
 plotCells <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
   if(is.null(gene2)) {
     # only 1 gene, plot absolutes
@@ -166,7 +173,9 @@ plotCells <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
 #'
 #' @return A ggplot2 object.
 #'
-#' @examples cellTable <- plotCellsTable (selectedCellData, "MYC", "PHB")
+#' @examples \dontrun{
+#' cellTable <- plotCellsTable (selectedCellData, "MYC", "PHB")
+#' }
 #'
 #' @export
 plotCellsTable <- function(.data, gene1, gene2) {
@@ -196,7 +205,9 @@ plotCellsTable <- function(.data, gene1, gene2) {
 #' @return Writes images to OUTPUT_PATH iff DO_WRITE == TRUE, or outputs on
 #' the GUI otherwise.
 #'
-#' @examples plotRatio("MYC", "BASP1")
+#' @examples \dontrun{
+#' plotRatio("MYC", "BASP1")
+#' }
 #'
 #' @export
 plotRatio <- function(gene1, gene2) {

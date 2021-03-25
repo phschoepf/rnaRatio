@@ -37,6 +37,8 @@ The main function of rnaRatio. You should not need to call
 any other functions for normal use.
 }
 \examples{
+\dontrun{
 rnaRatio("MYC", "BASP1", patientUrls, patientFilter, cellFilter, selectedCellFilter)
+}
 
 }
