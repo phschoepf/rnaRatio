@@ -22,4 +22,5 @@ Plot table of expression values and ratios for selected cell lines.
 }
 \examples{
 cellTable <- plotCellsTable (selectedCellData, "MYC", "PHB")
+
 }

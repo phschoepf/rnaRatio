@@ -38,4 +38,5 @@ any other functions for normal use.
 }
 \examples{
 rnaRatio("MYC", "BASP1", patientUrls, patientFilter, cellFilter, selectedCellFilter)
+
 }

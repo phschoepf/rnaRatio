@@ -3,11 +3,15 @@
 # Date: 2021-03-19
 
 # Imports -----------------------------------------------------------------
-
-library(cowplot)
-library(tidyverse)
-library(ggpubr)
-library(ggrepel)
+#' @import ggplot2 ggpubr
+#' @importFrom cowplot align_plots
+#' @importFrom dplyr arrange mutate mutate_if select summarize
+#' @importFrom ggrepel geom_label_repel
+#' @importFrom grDevices boxplot.stats
+#' @importFrom stats median reorder
+#' @importFrom rlang set_names
+#' @importFrom tidyr unnest_wider
+NULL
 
 # Helper functions -------------------------------------------------------------
 
@@ -27,7 +31,7 @@ library(ggrepel)
 #' @return An integer vector of form c(0, upper_ylim).
 #'
 #' @examples ylim <- calcYlim(filteredCellData, plotBy = expr(!!sym("MYC")))
-#' calcYlim(filtredPatientData, plotBy = expr(!!sym("BASP1")), 0.5)
+#' ylim <- calcYlim(filtredPatientData, plotBy = expr(!!sym("BASP1")), 0.5)
 calcYlim <- function(.data, plotBy, padding = 0.2) {
 
   boxplotStats <- .data %>%
@@ -47,11 +51,12 @@ calcYlim <- function(.data, plotBy, padding = 0.2) {
 #' @param ylim Manual ylim.
 #'
 #' @return A ggplot2 plot.
-#' @export
 #'
 #' @examples patPlot <- plotPatients(filteredPatientData, "MYC", "BASP1")
 #' patPlot1 <- plotPatients(filteredPatientData, "MTOR")
 #' patPlot2 <- plotPatients(filteredPatientData, "RPTOR", ylim = c(0,20000))
+#'
+#' @export
 plotPatients <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
   if(is.null(gene2)) {
     # only 1 gene, plot absolutes
@@ -84,7 +89,7 @@ plotPatients <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
     ) +
     geom_jitter(
       shape = 16,
-      position = position_jitter(w = 0.25, h = 0),
+      position = position_jitter(width = 0.25, height = 0),
       size = 0.6,
       color = "#f39200"
     ) +
@@ -132,7 +137,7 @@ plotCells <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
     ) +
     geom_jitter(
       shape = 16,
-      position = position_jitter(w = 0.25, h = 0),
+      position = position_jitter(width = 0.25, height = 0),
       size = 0.6,
       color = "#f39200"
     ) +
@@ -160,16 +165,17 @@ plotCells <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
 #' @param gene2 Denominator gene.
 #'
 #' @return A ggplot2 object.
-#' @export
 #'
 #' @examples cellTable <- plotCellsTable (selectedCellData, "MYC", "PHB")
+#'
+#' @export
 plotCellsTable <- function(.data, gene1, gene2) {
 
   ratio <- expr(!!sym(gene1) / !!sym(gene2))
 
   selectedCellsTable <- .data %>%
-    dplyr::select(Name, {{gene1}}, {{gene2}}) %>%
-    dplyr::mutate(ratio = !!ratio) %>%
+    select(Name, {{gene1}}, {{gene2}}) %>%
+    mutate(ratio = !!ratio) %>%
     mutate_if(is.numeric, round, digits = 2) %>%
     arrange(-ratio)
 
@@ -189,9 +195,10 @@ plotCellsTable <- function(.data, gene1, gene2) {
 #'
 #' @return Writes images to OUTPUT_PATH iff DO_WRITE == TRUE, or outputs on
 #' the GUI otherwise.
-#' @export
 #'
 #' @examples plotRatio("MYC", "BASP1")
+#'
+#' @export
 plotRatio <- function(gene1, gene2) {
 
   #generate the plots

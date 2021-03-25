@@ -1,12 +1,13 @@
 Package: rnaRatio
 Type: Package
-Title: Calculate and plot ratios of RNA expression from cBioPortal
-Version: 0.1.0
+Title: Calculate and plot RNA expression ratios using cBioPortal
+Version: 0.1
 Author: Philemon Schoepf <philemon.schoepf@student.uibk.ac.at>
-Maintainer: Author: Philemon Schoepf <philemon.schoepf@student.uibk.ac.at>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Maintainer: Philemon Schoepf <philemon.schoepf@student.uibk.ac.at>
+Imports: AnnotationDbi, cBioPortalData, cowplot, dplyr, ggplot2, ggpubr, ggrepel, httr, org.Hs.eg.db, purrr, stringr, tidyr
+Description: Fetch cell line and patient mRNA expression data form cBioPortal and visualize data in box-and-scatter-plots.
+    Can be used to compared patient to cell line data, annotate specific cell lines, and graph absolute expression data of one gene.
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

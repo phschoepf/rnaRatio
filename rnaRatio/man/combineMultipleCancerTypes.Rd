@@ -25,4 +25,5 @@ grouped by cancer origin.
 }
 \examples{
 allPatientData <- combineMultipleCancerTypes(table, c("MTOR", "RPTOR"), "rna_seq_v2_mrna")
+
 }

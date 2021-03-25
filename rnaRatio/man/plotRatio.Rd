@@ -22,4 +22,5 @@ You want to run fetchCbioData before running this function.
 }
 \examples{
 plotRatio("MYC", "BASP1")
+
 }

@@ -25,5 +25,5 @@ plus the padding value (0.2 = 20% more than highest col).
 }
 \examples{
 ylim <- calcYlim(filteredCellData, plotBy = expr(!!sym("MYC")))
-calcYlim(filtredPatientData, plotBy = expr(!!sym("BASP1")), 0.5)
+ylim <- calcYlim(filtredPatientData, plotBy = expr(!!sym("BASP1")), 0.5)
 }

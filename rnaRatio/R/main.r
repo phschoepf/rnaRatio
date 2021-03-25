@@ -2,6 +2,10 @@
 # Author: Philemon Schoepf <philemon.schoepf@student.ubik.ac.at>
 # Date: 2021-03-22
 
+# Imports -----------------------------------------------------------------
+#' @import cBioPortalData
+NULL
+
 # Global Variables -----------------------------------------------------------
 
 #image dims in mm (300 dpi)
@@ -26,15 +30,12 @@ HEIGHT = 56
 #' @return Either outputs images or plot to the GUI.
 #'
 #' @examples rnaRatio("MYC", "BASP1", patientUrls, patientFilter, cellFilter, selectedCellFilter)
-#' @export
 #'
+#' @export
 rnaRatio <- function(gene1, gene2, patientInput, patientFilter = "", cellFilter = "", selectedCellFilter = "", forceReload = FALSE){
 
-  source("R/fetchCbioData.r")
-  source("R/makePlots.r")
-
   if(!exists("filteredPatientData") | !exists("filteredCellData") | forceReload == T) {
-    fetchCbioData(gene1, gene2)
+    fetchCbioData(gene1, gene2, ...)
   }
   plotRatio(gene1, gene2)
 }

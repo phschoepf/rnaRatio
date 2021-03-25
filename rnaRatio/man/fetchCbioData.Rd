@@ -22,4 +22,5 @@ Generate expression table for a set of genes
 }
 \examples{
 fetchCbioData("MYC", "BASP1")
+
 }

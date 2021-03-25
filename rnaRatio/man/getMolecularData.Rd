@@ -7,18 +7,19 @@
 getMolecularData(study, genes, molecularProfile)
 }
 \arguments{
-\item{study}{A studyId string, e.g. "ccle_broad_2019".}
+\item{study}{A studyId string, e.g. "ccle_broad_2019"}
 
-\item{genes}{A character vector of HUGO gene names.}
+\item{genes}{A character vector of HUGO gene names}
 
 \item{molecularProfile}{A molecularProfile stub to search for. Usually "rna_seq_v2_mrna" or similar}
 }
 \value{
-A table of expression values as given by cBioPortalData.
+A table of expression values as given by cBioPortalData
 }
 \description{
 gets RNA expression profiles from cBioPortal for the given study and genes
 }
 \examples{
 moldata <- getMolecularData("ccle_broad_2019", c("MYC", "BASP1"), "rna_seq_mrna")
+
 }
