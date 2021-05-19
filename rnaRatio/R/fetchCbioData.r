@@ -149,7 +149,8 @@ getMolecularData <- function(study, genes, molecularProfile) {
 
   # get mRNA expression molecular profiles, or empty tibble if there are no data
   rnaProfiles <-
-    molecularProfiles(cbio, studyId = study, projection = "ID") %>%
+    molecularProfiles(cbio, studyId = study) %>%
+    select(molecularProfileId) %>%
     filter(str_detect(molecularProfileId, paste0(molecularProfile, "$")))
 
   # return empty tibble if no expression profile was found
