@@ -2,11 +2,11 @@
 # Author: Philemon Schoepf <philemon.schoepf@student.ubik.ac.at>
 # Date: 2021-03-22
 
-library(rnaRatio)
+#library(rnaRatio)
 
 OUTPUT_PATH = "../images/"
 OUTPUT_FORMAT = "png"
-DO_WRITE = F # if T, write output to file, otherwise show it on GUI
+DO_WRITE = T # if T, write output to file, otherwise show it on GUI
 
 # Input Variables ---------------------------------------------------------
 

@@ -6,11 +6,6 @@
 #' @import cBioPortalData
 NULL
 
-# Global Variables -----------------------------------------------------------
-
-#image dims in mm (300 dpi)
-WIDTH = 100
-HEIGHT = 56
 
 # Main function ---------------------------------------------------------------------
 

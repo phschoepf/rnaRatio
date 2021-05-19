@@ -2,7 +2,7 @@
 # Author: Philemon Schoepf <philemon.schoepf@student.ubik.ac.at>
 # Date: 2021-03-19
 
-# Imports -----------------------------------------------------------------
+# Imports ----------------------------------------------------------------------
 #' @import ggplot2 ggpubr
 #' @importFrom cowplot align_plots
 #' @importFrom dplyr arrange mutate mutate_if select summarize
@@ -12,6 +12,14 @@
 #' @importFrom rlang set_names
 #' @importFrom tidyr unnest_wider
 NULL
+
+
+# Properties -------------------------------------------------------------------
+
+WIDTH = 100 # image width in mm (@300 dpi)
+HEIGHT = 65 # image height in mm (@300 dpi)
+RNARATIO_TEXT_SIZE = 6 # axis text size in mm
+
 
 # Helper functions -------------------------------------------------------------
 
@@ -87,6 +95,7 @@ plotPatients <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
     )) +
     coord_cartesian(ylim = ylim) +
     theme_grey(base_size = 5) +
+    theme(axis.text = element_text(size = RNARATIO_TEXT_SIZE)) +
     rotate_x_text(30, hjust = 1) +
     labs(
       title = plotTitle,
@@ -135,7 +144,8 @@ plotCells <- function(.data, gene1, gene2 = NULL, ylim = NULL) {
     )) +
     coord_cartesian(ylim = ylim) +
     theme_grey(base_size = 5) +
-    theme(plot.margin = margin(l = 35))+
+    theme(plot.margin = margin(l = 35)) +
+    theme(axis.text = element_text(size = RNARATIO_TEXT_SIZE)) +
     rotate_x_text(30, hjust = 1) +
     labs(
       title = plotTitle,
