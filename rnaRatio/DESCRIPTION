@@ -1,7 +1,7 @@
 Package: rnaRatio
 Type: Package
 Title: Calculate and plot RNA expression ratios using cBioPortal
-Version: 0.2
+Version: 0.2.1
 Author: Philemon Schoepf <philemon.schoepf@student.uibk.ac.at>
 Maintainer: Philemon Schoepf <philemon.schoepf@student.uibk.ac.at>
 Imports: AnnotationDbi, cBioPortalData, cowplot, dplyr, ggplot2, ggpubr, ggrepel, httr, org.Hs.eg.db, purrr, rlang, S4Vectors, stringr, tibble, tidyr
